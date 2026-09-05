@@ -92,6 +92,7 @@ PIHOLE_DNS_2=8.8.8.8
 EOF
   fi
   export PIHOLE_SKIP_OS_CHECK="${PIHOLE_SKIP_OS_CHECK:-true}"
+  # nosemgrep: bash.curl.security.curl-pipe-bash.curl-pipe-bash -- upstream Pi-hole installer
   curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended
 }
 
