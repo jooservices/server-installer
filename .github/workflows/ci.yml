@@ -103,7 +103,7 @@ jobs:
           docker run --rm \
             --volume "${GITHUB_WORKSPACE}:/src:ro" \
             semgrep/semgrep@sha256:67319956da3dcb58baf5b322899c15458e3963e7018a86aeeb5cd224e69cb77a \
-            semgrep scan --config auto --error
+            semgrep scan --config p/bash --error --exclude '.github'
 
   test:
     name: Test

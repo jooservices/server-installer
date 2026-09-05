@@ -20,8 +20,15 @@ wiz_state_reset() {
 }
 
 wiz_modules_csv() {
-  local IFS=,
-  printf '%s' "${WIZ_MODULES[*]}"
+  local out="" m
+  for m in "${WIZ_MODULES[@]+"${WIZ_MODULES[@]}"}"; do
+    if [[ -z "${out}" ]]; then
+      out="${m}"
+    else
+      out="${out},${m}"
+    fi
+  done
+  printf '%s' "${out}"
 }
 
 wiz_modules_add() {
