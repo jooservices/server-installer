@@ -1,0 +1,11 @@
+{
+  "profile_name": "vm-essentials",
+  "description": "First-boot VM essentials: packages, sudo, NTP, LVM grow",
+  "modules": [
+    "packages",
+    "sudo_nopass",
+    "timesync",
+    "lvm_extend"
+  ],
+  "env": {}
+}

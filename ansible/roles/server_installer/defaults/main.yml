@@ -1,0 +1,7 @@
+---
+# defaults for role server_installer
+si_root: "/opt/server-installer"
+si_modules: ""
+si_profile: ""
+si_env: {}
+si_bin: "{{ si_root }}/bin/server-installer"

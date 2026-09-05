@@ -1,0 +1,14 @@
+{
+  "requires_systemd": false,
+  "os_family": [
+    "debian",
+    "redhat"
+  ],
+  "arch": [
+    "amd64",
+    "arm64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": true,
+  "note": ""
+}

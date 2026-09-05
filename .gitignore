@@ -1,0 +1,6 @@
+.local_creds/
+*.bak
+reports/
+*.log
+.state/
+.DS_Store

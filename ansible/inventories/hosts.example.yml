@@ -1,0 +1,25 @@
+# Example inventory — copy to hosts.yml and edit.
+# cp inventories/hosts.example.yml inventories/hosts.yml
+
+all:
+  children:
+    jooservices:
+      hosts:
+        # server1.example.com:
+        #   ansible_user: deploy
+        # Local smoke (control node == target):
+        localhost:
+          ansible_connection: local
+          ansible_python_interpreter: "{{ ansible_playbook_python }}"
+      vars:
+        # Comma-separated MODULE_IDs or empty when using profile
+        si_modules: "packages,timesync"
+        # Optional profile (overrides empty modules if set)
+        si_profile: ""
+        # Path to server-installer root on the target
+        si_root: "{{ playbook_dir }}/../.."
+        si_env: {}
+        # Example:
+        # si_env:
+        #   SI_DOCKER_USER: deploy
+        #   SI_PHP_VERSION: "8.5"

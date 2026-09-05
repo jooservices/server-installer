@@ -1,0 +1,9 @@
+{
+  "profile_name": "sec-baseline",
+  "description": "Baseline hardening: firewall + fail2ban (requires systemd)",
+  "modules": [
+    "firewall",
+    "fail2ban"
+  ],
+  "env": {}
+}

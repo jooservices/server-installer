@@ -1,0 +1,10 @@
+{
+  "profile_name": "obs-lite",
+  "description": "Lite metrics stack: Prometheus + node_exporter + Grafana",
+  "modules": [
+    "prometheus",
+    "node_exporter",
+    "grafana"
+  ],
+  "env": {}
+}

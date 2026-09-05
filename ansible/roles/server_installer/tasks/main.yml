@@ -1,0 +1,46 @@
+---
+- name: Assert server-installer binary exists
+  ansible.builtin.stat:
+    path: "{{ si_bin }}"
+  register: si_bin_stat
+
+- name: Fail when server-installer is missing on target
+  ansible.builtin.fail:
+    msg: >-
+      Missing {{ si_bin }}. Sync/clone server-installer to the host
+      (set si_root) before running this playbook.
+  when: not si_bin_stat.stat.exists
+
+- name: Require modules or profile
+  ansible.builtin.fail:
+    msg: "Set si_modules and/or si_profile in inventory/group_vars"
+  when: si_profile | length == 0 and si_modules | length == 0
+
+- name: Run server-installer apply with profile
+  ansible.builtin.command:
+    argv:
+      - "{{ si_bin }}"
+      - apply
+      - --profile
+      - "{{ si_profile }}"
+  environment: "{{ si_env }}"
+  register: si_apply
+  changed_when: true
+  when: si_profile | length > 0
+
+- name: Run server-installer apply with modules
+  ansible.builtin.command:
+    argv:
+      - "{{ si_bin }}"
+      - apply
+      - --modules
+      - "{{ si_modules }}"
+  environment: "{{ si_env }}"
+  register: si_apply
+  changed_when: true
+  when: si_profile | length == 0 and si_modules | length > 0
+
+- name: Show server-installer output
+  ansible.builtin.debug:
+    var: si_apply.stdout_lines
+  when: si_apply is defined and si_apply.stdout_lines is defined

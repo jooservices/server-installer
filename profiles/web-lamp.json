@@ -1,0 +1,16 @@
+{
+  "profile_name": "web-lamp",
+  "description": "LAMP-ish: Apache + PHP 8.5 + MySQL (Docker). Set SI_MYSQL_ROOT_PASSWORD in CI/secrets.",
+  "modules": [
+    "packages",
+    "docker",
+    "docker_group",
+    "apache",
+    "php",
+    "mysql"
+  ],
+  "env": {
+    "SI_PHP_VERSION": "8.5",
+    "SI_PHP_MODE": "cli"
+  }
+}

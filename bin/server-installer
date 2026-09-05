@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+# server-installer — CLI entry (modules + profiles; wizard comes later).
+set -euo pipefail
+
+SI_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=../lib/common.sh
+source "${SI_ROOT}/lib/common.sh"
+
+si_bootstrap
+
+usage() {
+  cat <<'EOF'
+Usage: server-installer <command> [options]
+
+Commands:
+  doctor              Show OS info and module plan (no changes)
+  plan                Show what apply would do
+  apply               Apply selected modules (idempotent)
+  verify              Re-check modules after apply
+  help                Show this help
+
+Options:
+  --profile <name>    Load modules (+ env defaults) from profiles/<name>.json
+  --modules <list>    Comma-separated module ids (overrides profile modules)
+  --dry-run           Plan-only execution for apply
+  -h, --help          Show this help
+
+Environment:
+  SI_SUDO_USER        Target user for sudo_nopass (default: SUDO_USER/USER)
+  SI_DOCKER_USER      Target user for docker_group (default: SI_SUDO_USER)
+  SI_LVM_MOUNT        Mount point for lvm_extend (default: /)
+  SI_PHP_VERSION      PHP version (default: 8.5; profiles may set)
+  SI_PHP_MODE         php mode: cli|fpm (default: cli; profiles may set)
+  SI_FORCE_BOTH_WEBSERVERS  Allow nginx+apache together (default: false)
+  SI_SKIP_LOCK        Set to true to skip flock
+  NO_COLOR            Disable ANSI colors
+
+Profile env defaults apply only when the variable is unset/empty.
+See profiles/README.md.
+
+Examples:
+  server-installer doctor --profile vm-essentials
+  server-installer apply --profile vm-essentials
+  server-installer apply --profile web-lemp
+  server-installer apply --profile web-lamp
+  SI_PHP_MODE=cli server-installer apply --modules php
+  SI_PHP_MODE=fpm server-installer apply --modules nginx,php
+  server-installer apply --modules apache
+  server-installer apply --modules packages,docker --dry-run
+EOF
+}
+
+CMD=""
+PROFILE=""
+MODULES_CSV=""
+export SI_DRY_RUN="false"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    doctor|plan|apply|verify|help)
+      CMD="$1"
+      shift
+      ;;
+    --profile)
+      PROFILE="${2:-}"
+      shift 2
+      ;;
+    --modules)
+      MODULES_CSV="${2:-}"
+      shift 2
+      ;;
+    --dry-run)
+      export SI_DRY_RUN="true"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      log_error "Unknown argument: $1"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [[ -z "${CMD}" || "${CMD}" == "help" ]]; then
+  usage
+  exit 0
+fi
+
+resolve_modules() {
+  local resolved=()
+  if [[ -n "${MODULES_CSV}" ]]; then
+    IFS=',' read -r -a resolved <<<"${MODULES_CSV}"
+  elif [[ -n "${PROFILE}" ]]; then
+    local from_profile
+    from_profile="$(si_profile_modules "${PROFILE}")" || return 1
+    # shellcheck disable=SC2206
+    resolved=(${from_profile})
+  else
+    log_error "Specify --profile <name> or --modules <list>"
+    return 1
+  fi
+
+  local cleaned=()
+  local m
+  for m in "${resolved[@]}"; do
+    m="$(echo "${m}" | tr -d '[:space:]')"
+    [[ -n "${m}" ]] && cleaned+=("${m}")
+  done
+  printf '%s\n' "${cleaned[@]}"
+}
+
+# Apply profile env in this shell (not inside process-substitution subshell).
+if [[ -n "${PROFILE}" && -z "${MODULES_CSV}" ]]; then
+  si_profile_apply_env "${PROFILE}" || exit 1
+fi
+
+mapfile -t MODULES < <(resolve_modules) || exit 1
+if [[ ${#MODULES[@]} -eq 0 ]]; then
+  log_error "No modules selected"
+  exit 1
+fi
+
+log_info "OS: ${SI_OS_ID} ${SI_OS_VERSION} (${SI_OS_FAMILY}/${SI_PKG_MANAGER}) arch=${SI_CPU_ARCH} systemd=${SI_SYSTEMD_ACTIVE}"
+log_info "Modules: ${MODULES[*]}"
+
+case "${CMD}" in
+  doctor|plan)
+    si_run_modules plan "${MODULES[@]}"
+    ;;
+  apply)
+    si_acquire_lock
+    if [[ "${SI_DRY_RUN}" == "true" ]]; then
+      si_run_modules plan "${MODULES[@]}"
+    else
+      si_run_modules apply "${MODULES[@]}"
+    fi
+    ;;
+  verify)
+    si_run_modules verify "${MODULES[@]}"
+    ;;
+esac

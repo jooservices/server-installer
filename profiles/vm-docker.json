@@ -1,0 +1,13 @@
+{
+  "profile_name": "vm-docker",
+  "description": "VM essentials plus Docker Engine and docker group",
+  "modules": [
+    "packages",
+    "sudo_nopass",
+    "timesync",
+    "lvm_extend",
+    "docker",
+    "docker_group"
+  ],
+  "env": {}
+}

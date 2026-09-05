@@ -1,0 +1,13 @@
+{
+  "requires_systemd": false,
+  "os_family": [
+    "debian",
+    "redhat"
+  ],
+  "arch": [
+    "amd64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": true,
+  "note": "limited arm64 support \u2014 may need amd64 emulation"
+}

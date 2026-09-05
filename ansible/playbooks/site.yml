@@ -1,0 +1,9 @@
+---
+# Thin orchestrator: Ansible only transports + invokes server-installer.
+# It does not re-implement package/app install logic.
+- name: Apply server-installer modules
+  hosts: jooservices
+  gather_facts: true
+  become: true
+  roles:
+    - role: server_installer
