@@ -21,13 +21,13 @@ jobs:
     steps:
       - name: Allow Dependabot titles
         if: >
-          github.actor == 'dependabot[bot]' ||
+          github.event.pull_request.user.login == 'dependabot[bot]' ||
           startsWith(github.head_ref, 'dependabot/')
         run: echo "Skipping semantic title pattern for Dependabot (required check stays green)."
 
       - name: Check PR title
         if: >
-          github.actor != 'dependabot[bot]' &&
+          github.event.pull_request.user.login != 'dependabot[bot]' &&
           !startsWith(github.head_ref, 'dependabot/')
         uses: amannn/action-semantic-pull-request@v6.1.1
         env:
