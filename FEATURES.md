@@ -85,7 +85,8 @@ Architecture: **modules + profiles + CLI**; wizard is a TUI frontend only (calls
 | # | Feature | Status |
 | --- | --- | --- |
 | Ubuntu E2E (`make e2e` — all modules covered) | done |
-| Full OS matrix / CI shellcheck | todo |
+| GitHub Actions baseline (dto-shaped, Bash-adapted) | done | see `WORKFLOWS.md` |
+| Full OS matrix | todo |
 
 ## Deferred
 
