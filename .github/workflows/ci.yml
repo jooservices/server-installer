@@ -82,10 +82,11 @@ jobs:
         with:
           scan-args: |-
             --recursive
+            --allow-no-lockfiles
             .
 
-      # Dependency Review needs GitHub Dependency graph / GHAS (often unavailable on private).
-      # Keep OSV as the Dependencies leg for this repo.
+      # No Dependency Review (Dependency graph / GHAS not available for this repo).
+      # OSV covers the Dependencies security leg.
 
       - name: Gitleaks OSS CLI
         if: matrix.name == 'Secrets'
