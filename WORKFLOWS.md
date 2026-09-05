@@ -51,9 +51,9 @@ flowchart TD
     S --> C[Coverage upload — aggregate gate]
     T --> C
 
-    S --- S1[Dependencies: OSV + Dependency Review]
+    S --- S1[Dependencies: OSV Scanner]
     S --- S2[Secrets: Gitleaks]
-    S --- S3[SAST: Semgrep bash]
+    S --- S3[SAST: Semgrep auto]
     T --- T1[Module coverage map]
     T --- T2[E2E essentials]
     T --- T3[E2E wizard]
@@ -61,6 +61,8 @@ flowchart TD
 
 Final required-style job name: **Coverage upload** (aggregates Validate → Lint → Security → Test).
 There is no Codecov/Sonar upload yet for this Bash POC — omit those README badges until configured.
+
+Dependency Review Action is not used (needs Dependency graph / GHAS support); OSV covers the Dependencies security leg.
 
 Local full matrix: `make e2e` (all suites). CI runs a subset for time.
 

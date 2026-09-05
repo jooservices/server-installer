@@ -84,9 +84,8 @@ jobs:
             --recursive
             .
 
-      - name: Dependency Review
-        if: matrix.name == 'Dependencies'
-        uses: actions/dependency-review-action@v5
+      # Dependency Review needs GitHub Dependency graph / GHAS (often unavailable on private).
+      # Keep OSV as the Dependencies leg for this repo.
 
       - name: Gitleaks OSS CLI
         if: matrix.name == 'Secrets'
