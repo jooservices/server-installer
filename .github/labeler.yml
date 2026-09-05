@@ -1,0 +1,33 @@
+'tests':
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'tests/**/*'
+
+'documentation':
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**.md'
+      - 'docs/**/*'
+
+'ci/cd':
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**/*'
+      - 'Makefile'
+
+'modules':
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'modules/**/*'
+      - 'metadata/**/*'
+
+'wizard':
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'wizard/**/*'
+      - 'bin/server-installer-wizard'
+
+'profiles':
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'profiles/**/*'

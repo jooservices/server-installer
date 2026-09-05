@@ -1,10 +1,15 @@
-.PHONY: help doctor e2e e2e-coverage e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap shellcheck
+.PHONY: help doctor e2e e2e-coverage e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap shellcheck lint
 
 help:
-	@echo "Targets: e2e e2e-coverage e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap"
+	@echo "Targets: lint e2e e2e-coverage e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap"
 
 doctor:
 	./bin/server-installer doctor --profile vm-essentials
+
+lint shellcheck:
+	shellcheck -x -e SC1091,SC2034,SC2016 \
+		bin/server-installer bin/server-installer-wizard lib/*.sh wizard/*.sh \
+		modules/*/*/module.sh tests/e2e/*.sh tests/run_e2e.sh
 
 e2e:
 	bash ./tests/run_e2e.sh all
@@ -32,6 +37,3 @@ e2e-gap-sys:
 
 e2e-gap-apps:
 	bash ./tests/run_e2e.sh gap-apps
-
-shellcheck:
-	shellcheck -x bin/server-installer lib/*.sh modules/*/*/module.sh tests/e2e/*.sh tests/run_e2e.sh

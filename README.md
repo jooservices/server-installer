@@ -1,8 +1,23 @@
 # server-installer
 
-CLI to bootstrap and harden Linux servers for JOOservices stacks.
+[![CI](https://github.com/jooservices/server-installer/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/jooservices/server-installer/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/jooservices/server-installer/badge)](https://securityscorecards.dev/viewer/?uri=github.com/jooservices/server-installer)
+[![Bash](https://img.shields.io/badge/Bash-5%2B-blue.svg)](https://www.gnu.org/software/bash/)
+[![Release](https://img.shields.io/badge/version-0.1.0-blue.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Status:** POC — modules + profiles + wizard frontend.
+CLI (and optional wizard) to bootstrap and harden Linux servers for JOOservices stacks — modules, profiles, preflight metadata.
+
+**Status:** POC — branch model may be bypassed.
+
+> Codecov / Sonar badges are omitted until those integrations are configured for this repo (same rule as other JOOservices packages).
+
+## Docs
+
+- **User guides:** [`docs/README.md`](docs/README.md)
+- **Workflows:** [`WORKFLOWS.md`](WORKFLOWS.md)
+- **Profiles:** [`profiles/README.md`](profiles/README.md)
+- **Features backlog:** [`FEATURES.md`](FEATURES.md)
 
 ## Quick start
 
@@ -23,8 +38,6 @@ sudo ./bin/server-installer apply --modules haproxy,fail2ban,certbot
 sudo ./bin/server-installer apply --modules adguard   # xor pihole
 sudo ./bin/server-installer apply --modules postgres,redis,rabbitmq
 ```
-
-Profiles (modules + optional `env`): [`profiles/README.md`](./profiles/README.md).
 
 ## Modules
 
@@ -47,14 +60,14 @@ Profiles (modules + optional `env`): [`profiles/README.md`](./profiles/README.md
 
 **Mutex:** nginx↔apache · adguard↔pihole · haproxy↔caddy · authelia↔authentik · mariadb↔mysql · redis↔valkey
 
-**Preflight:** `metadata/modules/<id>.json` (`requires_systemd`, `os_family`, `arch`, `needs_lvm`, `needs_docker`, `note`) — wizard gate before apply.
+**Preflight:** `metadata/modules/<id>.json` — wizard gate before apply.
 
-**Note:** `iac/*` installs CLIs/agents only — not used as the provisioner engine. `sentry` deploys GlitchTip (Sentry-compatible); full getsentry/self-hosted is out of scope for a single module. Optional fleet wrapper: [`ansible/`](./ansible/) (playbooks call this CLI).
-## E2E
+**Note:** `iac/*` installs CLIs/agents only. `sentry` deploys GlitchTip (Sentry-compatible). Optional fleet wrapper: [`ansible/`](./ansible/).
+
+## Quality
 
 ```bash
-make e2e              # all suites (required before Done)
+make lint              # shellcheck
 make e2e-coverage
+make e2e               # full suites (required before Done)
 ```
-
-See [`FEATURES.md`](./FEATURES.md).

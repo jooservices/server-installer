@@ -1,0 +1,67 @@
+# Dedicated CI for jooservices/server-installer — GitHub-hosted runners
+# Post-merge sanity on master/develop. Full gate lives in ci.yml (pull requests).
+name: CI post-merge
+
+on:
+  push:
+    branches: [master, develop]
+
+concurrency:
+  group: ci-post-merge-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Bash syntax check
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            bash -n "$f"
+          done < <(find bin lib wizard modules tests -type f -name '*.sh' -print0)
+
+  lint:
+    name: Lint
+    needs: [validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Shellcheck
+        run: make lint
+
+  test:
+    name: Test
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Module coverage map
+        run: bash ./tests/run_e2e.sh coverage
+
+      - name: E2E essentials
+        run: bash ./tests/run_e2e.sh essentials
