@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-09-05
+## [1.0.0] - 2026-09-05
 
 ### Added
 
@@ -16,5 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile schema B (`modules` + optional `env` defaults)
 - Ubuntu 24.04 E2E suites and GitHub Actions baseline
 
-[Unreleased]: https://github.com/jooservices/server-installer/compare/v0.1.0...HEAD
+### Fixed
+
+- CI security gates for Bash (OSV without lockfiles, Semgrep excludes, zizmor findings)
+- Dependabot-friendly Semantic PR title check using non-spoofable PR author context
+- Tag-driven release via `gh release create` (no unpinned third-party release action)
+
+## [0.1.0] - 2026-09-05
+
+### Added
+
+- Initial public tree (pre-1.0 packaging)
+
+[Unreleased]: https://github.com/jooservices/server-installer/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/jooservices/server-installer/releases/tag/v1.0.0
 [0.1.0]: https://github.com/jooservices/server-installer/releases/tag/v0.1.0
