@@ -6,9 +6,22 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=../lib/common.sh
 source "${ROOT}/lib/common.sh"
 
-module_ids="$({
+if ! command -v python3 >/dev/null 2>&1; then
+  printf 'python3 is required for metadata validation\n' >&2
+  exit 1
+fi
+
+module_names="$({
   find "${ROOT}/modules" -type f -name module.sh -exec awk -F'"' '/^MODULE_ID="/ {print $2}' {} +
-} | sort -u)"
+} | sort)"
+module_duplicates="$(printf '%s\n' "${module_names}" | uniq -d)"
+
+if [[ -n "${module_duplicates}" ]]; then
+  printf 'Duplicate module IDs: %s\n' "${module_duplicates}" >&2
+  exit 1
+fi
+
+module_ids="$(printf '%s\n' "${module_names}" | sort -u)"
 metadata_ids="$(find "${ROOT}/metadata/modules" -type f -name '*.json' -exec basename {} .json \; | sort -u)"
 
 if [[ "${module_ids}" != "${metadata_ids}" ]]; then

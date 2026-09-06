@@ -1,5 +1,7 @@
 FROM rockylinux:9
 
+# E2E runs as root intentionally to exercise server bootstrap and deploy sudo setup.
+
 ENV LANG=C.UTF-8
 
 RUN dnf install -y \

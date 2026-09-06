@@ -61,7 +61,7 @@ flowchart TD
     T --- T2[Metadata and preflight tests]
     T --- T3[E2E essentials]
     T --- T4[E2E wizard]
-    T --- T5[OS smoke matrix]
+    L --> T5[OS smoke matrix]
     T5 --> C
 ```
 
