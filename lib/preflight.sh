@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Preflight: compare host facts to metadata/modules/<id>.json.
 # Verdicts: PASS | WARN | BLOCK
-# Missing metadata file → permissive defaults (PASS unless host facts fail open checks).
+# Missing or invalid metadata → BLOCK. Metadata is part of the safety gate.
 
 si_preflight_meta_path() {
   printf '%s/%s.json' "${SI_METADATA_DIR}" "$1"
@@ -43,6 +43,11 @@ si_preflight_check() {
   local id="$1"
   local file families archs note
   file="$(si_preflight_meta_path "${id}")"
+
+  if ! si_metadata_validate_file "${file}"; then
+    printf 'BLOCK|Missing or invalid preflight metadata for module %s\n' "${id}"
+    return 0
+  fi
 
   families="$(si_preflight_field "${file}" "os_family" "any")"
   if [[ "${families}" != "any" && -n "${families}" ]]; then

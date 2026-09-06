@@ -3,11 +3,17 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IMAGE="server-installer-e2e:ubuntu24"
-DOCKERFILE="${ROOT}/tests/docker/ubuntu24.Dockerfile"
+E2E_OS="${E2E_OS:-ubuntu24}"
+IMAGE="server-installer-e2e:${E2E_OS}"
+DOCKERFILE="${ROOT}/tests/docker/${E2E_OS}.Dockerfile"
 KEEP="${KEEP:-false}"
 SUITE="${1:-all}"
 E2E_CONTAINER=""
+
+if [[ ! -f "${DOCKERFILE}" ]]; then
+  printf 'Unsupported E2E_OS: %s\n' "${E2E_OS}" >&2
+  exit 1
+fi
 
 log() { printf '[e2e] %s\n' "$*"; }
 
@@ -24,6 +30,7 @@ cleanup_container() {
 }
 
 verify_module_coverage() {
+  bash "${ROOT}/tests/validate_metadata.sh"
   log "Verifying every MODULE_ID is exercised by at least one E2E script"
   local missing=0
   local id

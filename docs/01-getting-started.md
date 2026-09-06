@@ -8,7 +8,7 @@ It is **not** a hosting control panel. Ansible/Salt/etc. modules install tools o
 
 ## Requirements
 
-- Linux host (Debian/Ubuntu or RHEL-family; E2E validated on Ubuntu 24.04)
+- Linux host (Debian/Ubuntu or RHEL-family; amd64/arm64 smoke-tested in CI)
 - Root or passwordless sudo for most modules
 - Docker on the host when applying Docker-based modules (or DinD in CI)
 - `python3` for profiles / wizard state JSON

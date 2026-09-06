@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# E2E: vm-essentials on Ubuntu (packages, sudo_nopass, timesync, lvm_extend).
+# E2E: vm-essentials on Debian-family and RHEL-family images.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -64,7 +64,7 @@ assert_cmd "zip installed" command -v zip
 assert_cmd "unzip installed" command -v unzip
 assert_cmd "sudoers drop-in exists" test -f /etc/sudoers.d/z99-deploy-nopasswd
 assert_cmd "deploy passwordless sudo" su -s /bin/bash -c 'sudo -n true' deploy
-assert_cmd "chrony package or binary" bash -c 'command -v chronyd || command -v chronyc || dpkg -s chrony >/dev/null'
+assert_cmd "chrony package or binary" bash -c 'command -v chronyd || command -v chronyc || dpkg -s chrony >/dev/null 2>&1 || rpm -q chrony >/dev/null 2>&1'
 assert_cmd "LV fully extended" bash -c "test \"\$(vgs --noheadings -o vg_free_count ${VG} | tr -d ' ')\" -eq 0"
 assert_cmd "filesystem usable" bash -c 'df -P /mnt/lvmtest | tail -1 | awk "{exit !(\$2+0>0)}"'
 

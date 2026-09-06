@@ -8,7 +8,7 @@
 
 CLI (and optional wizard) to bootstrap and harden Linux servers for JOOservices stacks — modules, profiles, preflight metadata.
 
-**Status:** POC — branch model may be bypassed.
+**Status:** Production support target: Debian/Ubuntu and RHEL-family Linux on amd64/arm64.
 
 > Codecov / Sonar badges are omitted until those integrations are configured for this repo (same rule as other JOOservices packages).
 
@@ -60,7 +60,7 @@ sudo ./bin/server-installer apply --modules postgres,redis,rabbitmq
 
 **Mutex:** nginx↔apache · adguard↔pihole · haproxy↔caddy · authelia↔authentik · mariadb↔mysql · redis↔valkey
 
-**Preflight:** `metadata/modules/<id>.json` — wizard gate before apply.
+**Preflight:** `metadata/modules/<id>.json` — strict metadata gate before apply; missing or invalid metadata blocks execution.
 
 **Note:** `iac/*` installs CLIs/agents only. `sentry` deploys GlitchTip (Sentry-compatible). Optional fleet wrapper: [`ansible/`](./ansible/).
 
