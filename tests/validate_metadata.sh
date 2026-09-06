@@ -6,6 +6,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=../lib/common.sh
 source "${ROOT}/lib/common.sh"
 
+if ! command -v python3 >/dev/null 2>&1; then
+  printf 'python3 is required for metadata validation\n' >&2
+  exit 1
+fi
+
 module_ids="$({
   find "${ROOT}/modules" -type f -name module.sh -exec awk -F'"' '/^MODULE_ID="/ {print $2}' {} +
 } | sort -u)"

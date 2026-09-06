@@ -1,7 +1,7 @@
-.PHONY: help doctor hooks-install e2e e2e-coverage metadata-test preflight-test e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap shellcheck lint
+.PHONY: help doctor hooks-install e2e e2e-coverage metadata-test preflight-test e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap e2e-gap-sys e2e-gap-apps shellcheck lint
 
 help:
-	@echo "Targets: lint metadata-test preflight-test e2e-coverage e2e"
+	@echo "Targets: lint hooks-install metadata-test preflight-test e2e-coverage e2e"
 
 doctor:
 	./bin/server-installer doctor --profile vm-essentials
