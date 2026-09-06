@@ -17,6 +17,14 @@ assert_verdict() {
   fi
 }
 
+assert_reason_contains() {
+  local name="$1" expected="$2" actual="$3"
+  if [[ "${actual}" != *"${expected}"* ]]; then
+    printf '%s: expected reason containing %s, got %s\n' "${name}" "${expected}" "${actual}" >&2
+    exit 1
+  fi
+}
+
 SI_OS_FAMILY=debian
 SI_CPU_ARCH=amd64
 SI_LVM_AVAILABLE=true
@@ -36,5 +44,11 @@ SI_METADATA_DIR="${metadata_dir}"
 printf '{\n' >"${metadata_dir}/broken.json"
 assert_verdict "invalid metadata blocks" BLOCK "$(si_preflight_check broken)"
 assert_verdict "missing metadata blocks" BLOCK "$(si_preflight_check missing)"
+
+python_path="$(mktemp -d)"
+trap 'rm -rf "${metadata_dir}" "${python_path}"' EXIT
+without_python="$(PATH="${python_path}" si_preflight_check packages)"
+assert_verdict "missing python3 blocks" BLOCK "${without_python}"
+assert_reason_contains "missing python3 reason" "python3 is required" "${without_python}"
 
 printf 'Preflight tests: OK\n'

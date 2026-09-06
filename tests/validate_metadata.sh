@@ -20,7 +20,13 @@ fi
 while IFS= read -r id; do
   [[ -n "${id}" ]] || continue
   file="${ROOT}/metadata/modules/${id}.json"
-  if ! si_metadata_validate_file "${file}"; then
+  if si_metadata_validate_file "${file}"; then
+    :
+  else
+    validation_status="$?"
+    if [[ "${validation_status}" -eq 2 ]]; then
+      printf 'python3 is required for metadata validation\n' >&2
+    fi
     printf 'Invalid metadata: %s\n' "${file}" >&2
     exit 1
   fi

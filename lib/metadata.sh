@@ -7,6 +7,9 @@ si_metadata_validate_file() {
   if [[ ! -f "${file}" ]]; then
     return 1
   fi
+  if ! command -v python3 >/dev/null 2>&1; then
+    return 2
+  fi
 
   SI_METADATA_FILE="${file}" python3 - <<'PY'
 import json

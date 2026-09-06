@@ -44,6 +44,10 @@ si_preflight_check() {
   local file families archs note
   file="$(si_preflight_meta_path "${id}")"
 
+  if ! command -v python3 >/dev/null 2>&1; then
+    printf 'BLOCK|python3 is required to validate preflight metadata for module %s\n' "${id}"
+    return 0
+  fi
   if ! si_metadata_validate_file "${file}"; then
     printf 'BLOCK|Missing or invalid preflight metadata for module %s\n' "${id}"
     return 0

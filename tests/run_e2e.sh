@@ -4,14 +4,23 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 E2E_OS="${E2E_OS:-ubuntu24}"
-IMAGE="server-installer-e2e:${E2E_OS}"
-DOCKERFILE="${ROOT}/tests/docker/${E2E_OS}.Dockerfile"
 KEEP="${KEEP:-false}"
 SUITE="${1:-all}"
 E2E_CONTAINER=""
 
+case "${E2E_OS}" in
+  ubuntu24|debian12|rocky9)
+    ;;
+  *)
+    printf 'Unsupported E2E_OS: %s (allowed: ubuntu24, debian12, rocky9)\n' "${E2E_OS}" >&2
+    exit 1
+    ;;
+esac
+
+IMAGE="server-installer-e2e:${E2E_OS}"
+DOCKERFILE="${ROOT}/tests/docker/${E2E_OS}.Dockerfile"
 if [[ ! -f "${DOCKERFILE}" ]]; then
-  printf 'Unsupported E2E_OS: %s\n' "${E2E_OS}" >&2
+  printf 'Missing E2E Dockerfile for supported OS: %s\n' "${E2E_OS}" >&2
   exit 1
 fi
 
