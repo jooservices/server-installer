@@ -94,5 +94,5 @@ Architecture: **modules + profiles + CLI**; wizard is a TUI frontend only (calls
 | --- | --- | --- |
 | Wizard UI + mid-run resume | done | state in `SI_WIZARD_STATE` (`--resume` / `--fresh`) |
 | Per-module preflight metadata JSON | done | Strict schema validation, fail-closed preflight, and coverage tests |
-| Hosting panel | out of scope |
-| Use Ansible/Salt as provisioner engine | out of scope — install-only modules |
+| Hosting panel | out of scope | |
+| Use Ansible/Salt as provisioner engine | out of scope | install-only modules |
