@@ -1,8 +1,9 @@
 # GitHub Actions workflow flow
 
 This document describes the workflows in `.github/workflows/`.
-Most jobs run on GitHub-hosted `ubuntu-latest`; OS smoke jobs also use Debian,
-Rocky Linux, and an Ubuntu ARM64 runner.
+Most jobs run on GitHub-hosted `ubuntu-latest`; OS smoke jobs use Ubuntu,
+Debian, and Rocky Linux Docker images, with the ARM64 leg using an
+`ubuntu-24.04-arm` runner.
 E2E suites use Docker (DinD-capable privileged containers) via `tests/run_e2e.sh`.
 
 ## Overall event flow

@@ -160,9 +160,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install shellcheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
-
       - name: OS smoke E2E
         env:
           E2E_OS: ${{ matrix.os }}
