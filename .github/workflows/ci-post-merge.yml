@@ -63,5 +63,11 @@ jobs:
       - name: Module coverage map
         run: bash ./tests/run_e2e.sh coverage
 
+      - name: Metadata validation
+        run: bash ./tests/validate_metadata.sh
+
+      - name: Preflight tests
+        run: bash ./tests/preflight.sh
+
       - name: E2E essentials
         run: bash ./tests/run_e2e.sh essentials

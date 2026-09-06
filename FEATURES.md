@@ -86,13 +86,13 @@ Architecture: **modules + profiles + CLI**; wizard is a TUI frontend only (calls
 | --- | --- | --- |
 | Ubuntu E2E (`make e2e` — all modules covered) | done |
 | GitHub Actions baseline (dto-shaped, Bash-adapted) | done | see `WORKFLOWS.md` |
-| Full OS matrix | todo |
+| Full OS matrix | done | Ubuntu 24.04, Debian 12, Rocky 9, amd64/arm64 smoke CI |
 
 ## Deferred
 
-| Item | Why |
-| --- | --- |
+| Item | Status | Notes |
+| --- | --- | --- |
 | Wizard UI + mid-run resume | done | state in `SI_WIZARD_STATE` (`--resume` / `--fresh`) |
-| Per-module preflight metadata JSON | done | `metadata/modules/*.json` + `lib/preflight.sh` |
-| Hosting panel | out of scope |
-| Use Ansible/Salt as provisioner engine | out of scope — install-only modules |
+| Per-module preflight metadata JSON | done | Strict schema validation, fail-closed preflight, and coverage tests |
+| Hosting panel | out of scope | |
+| Use Ansible/Salt as provisioner engine | out of scope | install-only modules |

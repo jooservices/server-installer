@@ -23,7 +23,9 @@ Before apply, the wizard compares host facts to `metadata/modules/<id>.json`.
 }
 ```
 
-Checker: `lib/preflight.sh`. Missing file → permissive defaults (effectively PASS).
+Checker: `lib/preflight.sh`. Missing or invalid metadata → `BLOCK`.
+
+Metadata schema is validated by `tests/validate_metadata.sh`; verdict behavior is covered by `tests/preflight.sh`.
 
 `--force` (wizard) continues past BLOCK.
 

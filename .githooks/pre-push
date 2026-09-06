@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v gitleaks >/dev/null 2>&1; then
+  default_ref="${default_ref:-origin/develop}"
+  gitleaks protect --verbose --redact --config=.gitleaks.toml --log-opts="${default_ref}..HEAD"
+else
+  printf '[hooks] gitleaks not installed; CI remains the required secret scan.\n' >&2
+fi
+
+make lint metadata-test preflight-test e2e-coverage

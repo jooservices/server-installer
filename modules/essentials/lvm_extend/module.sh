@@ -114,7 +114,11 @@ module_plan() {
 }
 
 module_apply() {
-  si_pkg_install lvm2 cloud-guest-utils e2fsprogs xfsprogs
+  local growpart_package="cloud-guest-utils"
+  if [[ "${SI_PKG_MANAGER}" == "dnf" || "${SI_PKG_MANAGER}" == "yum" ]]; then
+    growpart_package="cloud-utils-growpart"
+  fi
+  si_pkg_install lvm2 "${growpart_package}" e2fsprogs xfsprogs
 
   if [[ "${SI_DRY_RUN}" == "true" ]]; then
     module_plan

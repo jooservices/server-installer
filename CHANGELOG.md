@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-06
+
+### Added
+
+- Strict preflight metadata schema validation and fail-closed verdicts
+- Debian 12, Rocky Linux 9, and Ubuntu ARM64 smoke coverage
+- Metadata and preflight test gates
+
+### Changed
+
+- Removed the POC project status after adding the supported OS matrix
+
 ## [1.0.0] - 2026-09-05
 
 ### Added
@@ -28,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial public tree (pre-1.0 packaging)
 
-[Unreleased]: https://github.com/jooservices/server-installer/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/jooservices/server-installer/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/jooservices/server-installer/releases/tag/v1.1.0
 [1.0.0]: https://github.com/jooservices/server-installer/releases/tag/v1.0.0
 [0.1.0]: https://github.com/jooservices/server-installer/releases/tag/v0.1.0

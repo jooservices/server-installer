@@ -1,21 +1,32 @@
-.PHONY: help doctor e2e e2e-coverage e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap shellcheck lint
+.PHONY: help doctor hooks-install e2e e2e-coverage metadata-test preflight-test e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap e2e-gap-sys e2e-gap-apps shellcheck lint
 
 help:
-	@echo "Targets: lint e2e e2e-coverage e2e-essentials e2e-docker e2e-web e2e-devops e2e-full-gap"
+	@echo "Targets: lint hooks-install metadata-test preflight-test e2e-coverage e2e"
 
 doctor:
 	./bin/server-installer doctor --profile vm-essentials
 
+hooks-install:
+	git config core.hooksPath .githooks
+	chmod +x .githooks/commit-msg .githooks/pre-commit .githooks/pre-push
+
 lint shellcheck:
 	shellcheck -x -e SC1091,SC2034,SC2016 \
+		.githooks/* \
 		bin/server-installer bin/server-installer-wizard lib/*.sh wizard/*.sh \
-		modules/*/*/module.sh tests/e2e/*.sh tests/run_e2e.sh
+		modules/*/*/module.sh tests/*.sh tests/e2e/*.sh
 
 e2e:
 	bash ./tests/run_e2e.sh all
 
 e2e-coverage:
 	bash ./tests/run_e2e.sh coverage
+
+metadata-test:
+	bash ./tests/validate_metadata.sh
+
+preflight-test:
+	bash ./tests/preflight.sh
 
 e2e-essentials:
 	bash ./tests/run_e2e.sh essentials
