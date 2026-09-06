@@ -27,6 +27,8 @@ source "${SI_LIB_DIR}/download.sh"
 source "${SI_LIB_DIR}/containers.sh"
 # shellcheck source=runner.sh
 source "${SI_LIB_DIR}/runner.sh"
+# shellcheck source=metadata.sh
+source "${SI_LIB_DIR}/metadata.sh"
 # shellcheck source=preflight.sh
 source "${SI_LIB_DIR}/preflight.sh"
 

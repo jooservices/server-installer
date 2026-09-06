@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
 
@@ -47,7 +47,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
 
@@ -71,7 +71,7 @@ jobs:
           - name: SAST
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -114,12 +114,18 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
 
       - name: Module coverage map
         run: bash ./tests/run_e2e.sh coverage
+
+      - name: Metadata validation
+        run: bash ./tests/validate_metadata.sh
+
+      - name: Preflight tests
+        run: bash ./tests/preflight.sh
 
       - name: E2E essentials
         run: bash ./tests/run_e2e.sh essentials
@@ -127,9 +133,41 @@ jobs:
       - name: E2E wizard
         run: bash ./tests/run_e2e.sh wizard
 
+  os-matrix:
+    name: OS smoke (${{ matrix.os }}, ${{ matrix.arch }})
+    needs: [lint]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu24
+            arch: amd64
+            runner: ubuntu-latest
+          - os: debian12
+            arch: amd64
+            runner: ubuntu-latest
+          - os: rocky9
+            arch: amd64
+            runner: ubuntu-latest
+          - os: ubuntu24
+            arch: arm64
+            runner: ubuntu-24.04-arm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: OS smoke E2E
+        env:
+          E2E_OS: ${{ matrix.os }}
+        run: bash ./tests/run_e2e.sh essentials
+
   coverage:
     name: Coverage upload
-    needs: [validate, lint, security, test]
+    needs: [validate, lint, security, test, os-matrix]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: ${{ !cancelled() }}
@@ -140,7 +178,8 @@ jobs:
             "${{ needs.validate.result }}" \
             "${{ needs.lint.result }}" \
             "${{ needs.security.result }}" \
-            "${{ needs.test.result }}"; do
+            "${{ needs.test.result }}" \
+            "${{ needs.os-matrix.result }}"; do
             if [ "${result}" != "success" ]; then
               echo "CI failed: one or more required jobs did not succeed"
               exit 1

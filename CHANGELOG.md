@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Strict preflight metadata schema validation and fail-closed verdicts
+- Debian 12, Rocky Linux 9, and Ubuntu ARM64 smoke coverage
+- Metadata and preflight test gates
+
+### Changed
+
+- Removed the POC project status after adding the supported OS matrix
+
 ## [1.0.0] - 2026-09-05
 
 ### Added

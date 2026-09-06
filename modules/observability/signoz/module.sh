@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# SigNoz lite stack (ClickHouse + query-service + frontend). Requires docker.
-# Not the full official compose — enough for UI bootstrap / POC.
+# SigNoz lite stack (ClickHouse + query-service + frontend). Requires Docker.
+# Not the full official compose; intended for a lightweight UI bootstrap.
 
 MODULE_ID="signoz"
 MODULE_TITLE="SigNoz"
@@ -14,7 +14,7 @@ module_plan() {
   if module_check; then
     log_plan "SigNoz frontend exists"
   else
-    log_plan "Will run SigNoz lite (clickhouse + query-service + frontend)"
+    log_plan "Will run SigNoz lite (ClickHouse + query-service + frontend)"
   fi
 }
 

@@ -22,4 +22,4 @@ One JSON file per `MODULE_ID`. Consumed by `lib/preflight.sh` (wizard gate).
 | `needs_docker` | WARN without docker / without systemd (DinD) |
 | `note` | Attached to PASS (and some WARN paths) |
 
-Missing file → permissive defaults (effectively PASS). Coverage check expects a file for every module.
+Missing or invalid file → `BLOCK`. Coverage validation expects exactly one valid file for every module.

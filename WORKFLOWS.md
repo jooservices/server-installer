@@ -1,7 +1,9 @@
 # GitHub Actions workflow flow
 
 This document describes the workflows in `.github/workflows/`.
-All jobs run on GitHub-hosted `ubuntu-latest` runners.
+Most jobs run on GitHub-hosted `ubuntu-latest`; OS smoke jobs use Ubuntu,
+Debian, and Rocky Linux Docker images, with the ARM64 leg using an
+`ubuntu-24.04-arm` runner.
 E2E suites use Docker (DinD-capable privileged containers) via `tests/run_e2e.sh`.
 
 ## Overall event flow
@@ -21,7 +23,8 @@ flowchart TD
     push[Push to master or develop] --> PostMerge[CI post-merge]
     push --> CodeQL
     push --> Audit
-    push --> Scorecard[OpenSSF Scorecard]
+    push --> Scorecard{master only?}
+    Scorecard -->|yes| ScorecardRun[OpenSSF Scorecard]
 
     tag[Push tag v*.*.*] --> Release[Release]
 
@@ -55,16 +58,19 @@ flowchart TD
     S --- S2[Secrets: Gitleaks]
     S --- S3[SAST: Semgrep auto]
     T --- T1[Module coverage map]
-    T --- T2[E2E essentials]
-    T --- T3[E2E wizard]
+    T --- T2[Metadata and preflight tests]
+    T --- T3[E2E essentials]
+    T --- T4[E2E wizard]
+    T --- T5[OS smoke matrix]
+    T5 --> C
 ```
 
-Final required-style job name: **Coverage upload** (aggregates Validate → Lint → Security → Test).
-There is no Codecov/Sonar upload yet for this Bash POC — omit those README badges until configured.
+Final required-style job name: **Coverage upload** (aggregates Validate → Lint → Security → Test → OS smoke matrix).
+There is no Codecov/Sonar upload for this Bash project — omit those README badges until configured.
 
 Dependency Review Action is not used (needs Dependency graph / GHAS support); OSV covers the Dependencies security leg.
 
-Local full matrix: `make e2e` (all suites). CI runs a subset for time.
+Local full matrix: `make e2e` (all suites). CI runs the Ubuntu full essentials/wizard gate plus Debian/Rocky/ARM64 essentials smoke coverage.
 
 ## Post-merge (`ci-post-merge.yml`)
 
