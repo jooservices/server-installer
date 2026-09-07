@@ -23,7 +23,7 @@ flowchart TD
     push[Push to master or develop] --> PostMerge[CI post-merge]
     push --> CodeQL
     push --> Audit
-    push --> Scorecard{master only?}
+    push --> Scorecard{develop only?}
     Scorecard -->|yes| ScorecardRun[OpenSSF Scorecard]
 
     tag[Push tag v*.*.*] --> Release[Release]
@@ -84,7 +84,7 @@ Push to `master` / `develop`: syntax check → shellcheck → coverage map → e
 | `semantic-pr.yml` | Validate PR Title | Type + uppercase subject |
 | `codeql.yml` | Analyze GitHub Actions | Actions language |
 | `workflow-audit.yml` | Actionlint / Zizmor | When `.github/**` changes |
-| `scorecard.yml` | Scorecard Analysis | OpenSSF |
+| `scorecard.yml` | Push to `develop`; Monday 00:00 UTC; manual | OpenSSF Scorecard |
 | `pr-labeler.yml` | Auto-label PR | Path labels |
 | `stale.yml` | Mark stale | Issues/PRs |
 | `link-check.yml` | Check Markdown links | Weekly lychee |
