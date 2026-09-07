@@ -1,9 +1,9 @@
-# server-installer
+# jooservices/server-installer
 
-[![CI](https://github.com/jooservices/server-installer/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/jooservices/server-installer/actions/workflows/ci.yml)
+[![CI](https://github.com/jooservices/server-installer/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/jooservices/server-installer/actions/workflows/ci.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/jooservices/server-installer/badge)](https://securityscorecards.dev/viewer/?uri=github.com/jooservices/server-installer)
 [![Bash](https://img.shields.io/badge/Bash-5%2B-blue.svg)](https://www.gnu.org/software/bash/)
-[![Release](https://img.shields.io/badge/version-1.1.0-blue.svg)](CHANGELOG.md)
+[![GitHub Release](https://img.shields.io/github/v/release/jooservices/server-installer?display_name=tag)](https://github.com/jooservices/server-installer/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 CLI (and optional wizard) to bootstrap and harden Linux servers for JOOservices stacks — modules, profiles, preflight metadata.
