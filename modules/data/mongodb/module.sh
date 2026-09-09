@@ -31,6 +31,7 @@ module_apply() {
     if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
     si_brew_require || return 1
     brew tap mongodb/brew >/dev/null
+    brew trust mongodb/brew >/dev/null 2>&1 || true
     si_pkg_install mongodb-community
     brew services start mongodb-community >/dev/null 2>&1 || true
     return 0
