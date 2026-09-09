@@ -32,16 +32,26 @@ si_brew_require() {
   return 0
 }
 
-# True when `brew services` reports the formula's service as started.
-# Accepts a bare formula or a fully-qualified tap/formula name — `brew
-# services list` always shows the short name in its Name column.
+# True when `brew services` reports the formula's service as running.
+# Queries the formula directly (accepts bare or fully-qualified tap/formula
+# names) via `brew services info --json` rather than matching against
+# `brew services list`'s Name column — some taps (e.g. shivammathur/php)
+# register the launchd service under a different name than the formula
+# itself (php@8.5 installs a service literally named "php").
 si_brew_service_running() {
-  local name="${1##*/}"
-  brew services list 2>/dev/null | grep -qE "^${name}[[:space:]]+started"
+  local name="$1"
+  brew services info "${name}" --json 2>/dev/null | python3 -c '
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    sys.exit(0 if data and data[0].get("running") else 1)
+except Exception:
+    sys.exit(1)
+'
 }
 
-# Start a formula's service and confirm it — `brew services list` can lag a
-# moment behind launchd actually registering the service, so poll briefly
+# Start a formula's service and confirm it — status can lag a moment
+# behind launchd actually registering the service, so poll briefly
 # instead of checking once immediately after `start` returns.
 si_brew_service_start() {
   local name="$1"
