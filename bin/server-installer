@@ -128,7 +128,12 @@ if [[ -n "${PROFILE}" && -z "${MODULES_CSV}" ]]; then
   si_profile_apply_env "${PROFILE}" || exit 1
 fi
 
-mapfile -t MODULES < <(resolve_modules) || exit 1
+# mapfile/readarray need bash 4+; macOS ships bash 3.2 by default.
+MODULES=()
+while IFS= read -r si_module_line; do
+  MODULES+=("${si_module_line}")
+done < <(resolve_modules)
+unset si_module_line
 if [[ ${#MODULES[@]} -eq 0 ]]; then
   log_error "No modules selected"
   exit 1

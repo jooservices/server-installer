@@ -20,8 +20,8 @@ wiz_report_write() {
       "${SI_OS_ID}" "${SI_OS_VERSION}" "${SI_CPU_ARCH}" "${SI_SYSTEMD_ACTIVE}"
     printf '\n## Env keys set\n\n'
     local k
-    if [[ ${#WIZ_ENV[@]} -gt 0 ]]; then
-      for k in "${!WIZ_ENV[@]}"; do
+    if [[ ${#WIZ_ENV_KEYS[@]} -gt 0 ]]; then
+      for k in "${WIZ_ENV_KEYS[@]}"; do
         printf -- '- %s=(redacted)\n' "${k}"
       done
     else
