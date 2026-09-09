@@ -115,6 +115,20 @@ si_run_modules() {
 
     log_info "[${idx}/${total}] ${MODULE_TITLE:-${id}} (${mode})"
 
+    if [[ "${SI_ENFORCE_PREFLIGHT:-false}" == "true" ]]; then
+      local pf_line pf_verdict pf_reason
+      pf_line="$(si_preflight_check "${id}")"
+      pf_verdict="${pf_line%%|*}"
+      pf_reason="${pf_line#*|}"
+      if [[ "${pf_verdict}" == "BLOCK" ]]; then
+        log_error "${id}: preflight BLOCK — ${pf_reason}"
+        failed=1
+        continue
+      elif [[ "${pf_verdict}" == "WARN" ]]; then
+        log_warn "${id}: preflight WARN — ${pf_reason}"
+      fi
+    fi
+
     case "${mode}" in
       doctor|plan)
         module_plan

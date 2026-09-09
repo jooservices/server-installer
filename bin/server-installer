@@ -23,6 +23,10 @@ Options:
   --profile <name>    Load modules (+ env defaults) from profiles/<name>.json
   --modules <list>    Comma-separated module ids (overrides profile modules)
   --dry-run           Plan-only execution for apply
+  --preflight         Enforce metadata/modules/<id>.json gate (BLOCK/WARN),
+                       same check the wizard runs. Off by default — CI/E2E
+                       containers have no systemd and would BLOCK on the 17
+                       requires_systemd modules otherwise.
   -h, --help          Show this help
 
 Environment:
@@ -47,6 +51,7 @@ Examples:
   SI_PHP_MODE=fpm server-installer apply --modules nginx,php
   server-installer apply --modules apache
   server-installer apply --modules packages,docker --dry-run
+  server-installer apply --modules virtualmin --preflight
 EOF
 }
 
@@ -54,6 +59,7 @@ CMD=""
 PROFILE=""
 MODULES_CSV=""
 export SI_DRY_RUN="false"
+export SI_ENFORCE_PREFLIGHT="false"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -71,6 +77,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --dry-run)
       export SI_DRY_RUN="true"
+      shift
+      ;;
+    --preflight)
+      export SI_ENFORCE_PREFLIGHT="true"
       shift
       ;;
     -h|--help)
