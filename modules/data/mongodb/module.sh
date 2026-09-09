@@ -33,8 +33,7 @@ module_apply() {
     brew tap mongodb/brew >/dev/null
     brew trust mongodb/brew >/dev/null 2>&1 || true
     si_pkg_install mongodb-community
-    brew services start mongodb-community
-    si_brew_service_running mongodb-community
+    si_brew_service_start mongodb-community
     return
   fi
   si_docker_require || return 1

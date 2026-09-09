@@ -192,8 +192,7 @@ module_apply() {
     si_pkg_install "$(si_php_macos_formula)"
     if [[ "${SI_PHP_MODE}" == "fpm" ]]; then
       si_brew_require || return 1
-      brew services start "$(si_php_macos_formula)"
-      si_brew_service_running "$(si_php_macos_formula)"
+      si_brew_service_start "$(si_php_macos_formula)"
       return
     fi
     return 0

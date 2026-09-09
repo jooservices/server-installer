@@ -40,6 +40,20 @@ si_brew_service_running() {
   brew services list 2>/dev/null | grep -qE "^${name}[[:space:]]+started"
 }
 
+# Start a formula's service and confirm it — `brew services list` can lag a
+# moment behind launchd actually registering the service, so poll briefly
+# instead of checking once immediately after `start` returns.
+si_brew_service_start() {
+  local name="$1"
+  brew services start "${name}" || return 1
+  local i
+  for i in 1 2 3 4 5; do
+    si_brew_service_running "${name}" && return 0
+    sleep 1
+  done
+  return 1
+}
+
 si_pkg_install() {
   local pkgs=("$@")
   local missing=()

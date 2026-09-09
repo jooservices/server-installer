@@ -30,8 +30,7 @@ module_apply() {
     if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
     si_pkg_install redis
     si_brew_require || return 1
-    brew services start redis
-    si_brew_service_running redis
+    si_brew_service_start redis
     return
   fi
   si_docker_require || return 1

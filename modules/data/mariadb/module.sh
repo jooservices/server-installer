@@ -34,10 +34,10 @@ module_apply() {
     if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
     si_pkg_install mariadb
     si_brew_require || return 1
-    brew services start mariadb
+    si_brew_service_start mariadb
+    local rc=$?
     log_warn "No root password set automatically — run 'mysql_secure_installation' to secure it"
-    si_brew_service_running mariadb
-    return
+    return "${rc}"
   fi
   local panel
   if panel="$(si_installed_panel)"; then
