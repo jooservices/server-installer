@@ -1,0 +1,13 @@
+{
+  "requires_systemd": false,
+  "os_family": [
+    "macos"
+  ],
+  "arch": [
+    "amd64",
+    "arm64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": false,
+  "note": "Unattended install (RUNZSH=no CHSH=no) — does not change the default shell."
+}

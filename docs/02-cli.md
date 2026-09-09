@@ -34,12 +34,14 @@ Entry: `bin/server-installer`
 | `SI_MYSQL_ROOT_PASSWORD` | Pin MySQL root password |
 | `SI_SKIP_LOCK` | Skip flock (tests) |
 | `SI_DRY_RUN` / `--dry-run` | Plan only |
+| `SI_ENFORCE_PREFLIGHT` / `--preflight` | Enforce `metadata/modules/<id>.json` gate (PASS/WARN/BLOCK), same check the wizard always runs. Off by default — CI/E2E containers have no systemd and would BLOCK on `requires_systemd` modules otherwise. `BLOCK` skips just that module (exit code still reflects failure); `WARN` logs and proceeds. |
 
 Examples:
 
 ```bash
 SI_PHP_MODE=fpm sudo ./bin/server-installer apply --modules nginx,php
 SI_MYSQL_ROOT_PASSWORD='…' sudo ./bin/server-installer apply --profile web-lemp
+sudo ./bin/server-installer apply --modules virtualmin --preflight
 ```
 
 Next: [Wizard](./03-wizard.md) · [Modules](./05-modules.md)

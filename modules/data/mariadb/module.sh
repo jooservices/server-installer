@@ -5,10 +5,22 @@ MODULE_ID="mariadb"
 MODULE_TITLE="MariaDB"
 
 module_check() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    si_pkg_is_installed mariadb
+    return
+  fi
   command -v docker >/dev/null 2>&1 && si_docker_container_exists mariadb
 }
 
 module_plan() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    if module_check; then log_plan "mariadb (brew) already installed"; else log_plan "Will brew install mariadb"; fi
+    return
+  fi
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — mariadb will refuse (mutex, panel owns the DB stack)"
+  fi
   if si_docker_container_exists mysql 2>/dev/null; then
     log_plan "MySQL detected — mariadb will refuse (mutex)"
   fi
@@ -17,6 +29,20 @@ module_plan() {
 }
 
 module_apply() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    if module_check; then return 0; fi
+    if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
+    si_pkg_install mariadb
+    si_brew_require || return 1
+    brew services start mariadb >/dev/null 2>&1 || true
+    log_warn "No root password set automatically — run 'mysql_secure_installation' to secure it"
+    return 0
+  fi
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It manages the DB stack itself — remove it before installing MariaDB."
+    return 1
+  fi
   si_docker_require || return 1
   if si_docker_container_exists mysql; then
     log_error "MySQL is installed. Remove it before installing MariaDB."

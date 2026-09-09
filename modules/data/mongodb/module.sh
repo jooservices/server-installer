@@ -5,15 +5,36 @@ MODULE_ID="mongodb"
 MODULE_TITLE="MongoDB"
 
 module_check() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    si_pkg_is_installed mongodb-community
+    return
+  fi
   command -v docker >/dev/null 2>&1 && si_docker_container_exists mongodb
 }
 
 module_plan() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    if module_check; then
+      log_plan "mongodb-community (brew) already installed"
+    else
+      log_plan "Will tap mongodb/brew and brew install mongodb-community"
+    fi
+    return
+  fi
   if ! command -v docker >/dev/null 2>&1; then log_plan "Docker required"; fi
   if module_check; then log_plan "mongodb exists"; else log_plan "Will run mongo:7"; fi
 }
 
 module_apply() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    if module_check; then return 0; fi
+    if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
+    si_brew_require || return 1
+    brew tap mongodb/brew >/dev/null
+    si_pkg_install mongodb-community
+    brew services start mongodb-community >/dev/null 2>&1 || true
+    return 0
+  fi
   si_docker_require || return 1
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi

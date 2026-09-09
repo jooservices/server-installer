@@ -43,9 +43,10 @@ sudo ./bin/server-installer apply --modules postgres,redis,rabbitmq
 
 | Area | Modules |
 | --- | --- |
-| essentials | `packages` `sudo_nopass` `timesync` `lvm_extend` |
+| essentials | `packages` `sudo_nopass` `timesync` `lvm_extend` `git_identity` |
 | runtime | `docker` `docker_group` |
 | services | `php` `nginx` `apache` |
+| panel | `webmin` `virtualmin` |
 | security | `firewall` `fail2ban` `crowdsec` |
 | observability | `prometheus` `node_exporter` `grafana` `loki` `promtail` `jaeger` `otel_collector` `zipkin` `tempo` `pyroscope` `nightingale` `signoz` `sentry_cli` |
 | system | `hostname` `locale` `timezone` `swap` `ulimits` `upgrade` `supervisor` |
@@ -54,15 +55,16 @@ sudo ./bin/server-installer apply --modules postgres,redis,rabbitmq
 | network | `wireguard` `tailscale` |
 | backup | `restic` `borg` |
 | certs | `certbot` |
-| apps | `portainer` `uptime_kuma` `traefik` `minio` `vault` `watchtower` `nginx_proxy_manager` `gitea` `nextcloud` `homeassistant` `authelia` `authentik` `postgres` `redis` `sentry` `milvus` |
+| apps | `portainer` `uptime_kuma` `traefik` `minio` `vault` `watchtower` `nginx_proxy_manager` `gitea` `nextcloud` `homeassistant` `authelia` `authentik` `postgres` `redis` `sentry` `milvus` `github_runner` |
 | data | `mariadb` `mysql` `mongodb` `clickhouse` `memcached` `valkey` `rabbitmq` `nats` `kafka` `mosquitto` |
 | iac (install-only) | `salt` `puppet` `chef` `cfengine` `pyinfra` `fabric` `terraform` `opentofu` `pulumi` `packer` `cloud_init` `ansible` |
+| workstation (macOS only) | `homebrew` `oh_my_zsh` |
 
-**Mutex:** nginx↔apache · adguard↔pihole · haproxy↔caddy · authelia↔authentik · mariadb↔mysql · redis↔valkey
+**Mutex:** nginx↔apache · adguard↔pihole · haproxy↔caddy · authelia↔authentik · mariadb↔mysql · redis↔valkey · webmin↔virtualmin, both refuse alongside apache/nginx/php/mariadb/mysql/certbot/haproxy/caddy/traefik/nginx_proxy_manager/adguard/pihole (panel owns the web stack)
 
 **Preflight:** `metadata/modules/<id>.json` — strict metadata gate before apply; missing or invalid metadata blocks execution.
 
-**Note:** `iac/*` installs CLIs/agents only. `sentry` deploys GlitchTip (Sentry-compatible). Optional fleet wrapper: [`ansible/`](./ansible/).
+**Note:** `iac/*` installs CLIs/agents only. `sentry` deploys GlitchTip (Sentry-compatible). Optional fleet wrapper: [`ansible/`](./ansible/). `php`/`redis`/`mariadb`/`mongodb` also carry a macOS branch (Homebrew instead of apt/dnf/Docker) — same `MODULE_ID`, see [Modules](docs/05-modules.md).
 
 ## Quality
 

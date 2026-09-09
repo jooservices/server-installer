@@ -20,6 +20,7 @@ Architecture: **modules + profiles + CLI**; wizard is a TUI frontend only (calls
 | --- | --- | --- |
 | packages · sudo_nopass · timesync · lvm_extend · docker · docker_group | done |
 | nginx · apache · php (cli\|fpm) | done |
+| webmin · virtualmin | done | standalone panel; mutex vs. web stack + each other |
 
 ## Security / observability / proxy / DNS / network
 
@@ -87,6 +88,9 @@ Architecture: **modules + profiles + CLI**; wizard is a TUI frontend only (calls
 | Ubuntu E2E (`make e2e` — all modules covered) | done |
 | GitHub Actions baseline (dto-shaped, Bash-adapted) | done | see `WORKFLOWS.md` |
 | Full OS matrix | done | Ubuntu 24.04, Debian 12, Rocky 9, amd64/arm64 smoke CI |
+| CLI opt-in preflight (`--preflight`) | done | wizard always enforced it; CLI didn't — off by default, CI-safe |
+| `git_identity` module | done | git config + ed25519 SSH key; cross-platform (Linux + macOS) |
+| `github_runner` module | done | registers a self-hosted Actions runner via PAT → registration-token; systemd service or `run.sh` fallback; live-verified against a real org |
 
 ## Deferred
 
@@ -94,5 +98,6 @@ Architecture: **modules + profiles + CLI**; wizard is a TUI frontend only (calls
 | --- | --- | --- |
 | Wizard UI + mid-run resume | done | state in `SI_WIZARD_STATE` (`--resume` / `--fresh`) |
 | Per-module preflight metadata JSON | done | Strict schema validation, fail-closed preflight, and coverage tests |
-| Hosting panel | out of scope | |
+| Hosting panel | done | `webmin`/`virtualmin` modules, mutex-gated (see Essentials/runtime/web) |
+| macOS workstation support | done | `workstation` area (`homebrew`, `oh_my_zsh`) + brew branch in `php`/`redis`/`mariadb`/`mongodb`; wizard catalog/profiles filtered by `os_family`; never sudo |
 | Use Ansible/Salt as provisioner engine | out of scope | install-only modules |

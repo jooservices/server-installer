@@ -1,6 +1,7 @@
 {
   "profile_name": "web-lamp",
   "description": "LAMP-ish: Apache + PHP 8.5 + MySQL (Docker). Set SI_MYSQL_ROOT_PASSWORD in CI/secrets.",
+  "os_family": ["debian", "redhat"],
   "modules": [
     "packages",
     "docker",

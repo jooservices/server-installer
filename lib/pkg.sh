@@ -10,10 +10,26 @@ si_pkg_is_installed() {
     dnf|yum)
       rpm -q "${pkg}" >/dev/null 2>&1
       ;;
+    brew)
+      command -v brew >/dev/null 2>&1 && brew list --formula "${pkg}" >/dev/null 2>&1
+      ;;
     *)
       return 1
       ;;
   esac
+}
+
+# Homebrew refuses to run as root — never prefix brew calls with sudo.
+si_brew_require() {
+  if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
+    log_error "Homebrew refuses to run as root. Re-run this module without sudo."
+    return 1
+  fi
+  if ! command -v brew >/dev/null 2>&1; then
+    log_error "Homebrew not installed. Apply module homebrew first."
+    return 1
+  fi
+  return 0
 }
 
 si_pkg_install() {
@@ -47,6 +63,10 @@ si_pkg_install() {
       ;;
     yum)
       yum install -y -q "${missing[@]}"
+      ;;
+    brew)
+      si_brew_require || return 1
+      brew install "${missing[@]}"
       ;;
     *)
       log_error "Unsupported package manager: ${SI_PKG_MANAGER}"

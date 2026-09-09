@@ -4,9 +4,17 @@
 # area -> space-separated "id|Title" entries
 declare -A WIZ_CATALOG=()
 WIZ_AREA_ORDER=(
-  essentials runtime system services security observability
-  proxy dns network backup certs apps data iac
+  essentials runtime system services panel security observability
+  proxy dns network backup certs apps data iac workstation
 )
+
+# True unless the module's metadata os_family excludes the detected host.
+wiz_catalog_os_match() {
+  local id="$1" meta families
+  meta="$(si_preflight_meta_path "${id}")"
+  families="$(si_preflight_field "${meta}" "os_family" "any")"
+  [[ "${families}" == "any" || " ${families} " == *" ${SI_OS_FAMILY} "* ]]
+}
 
 wiz_catalog_load() {
   WIZ_CATALOG=()
@@ -17,6 +25,7 @@ wiz_catalog_load() {
     title="$(grep -E '^MODULE_TITLE=' "${path}" | head -n1 | sed 's/.*"\(.*\)".*/\1/;s/.*'\''\(.*\)'\''.*/\1/')"
     [[ -n "${id}" ]] || continue
     [[ -n "${title}" ]] || title="${id}"
+    wiz_catalog_os_match "${id}" || continue
     WIZ_CATALOG["${area}"]+="${id}|${title}"$'\n'
   done < <(find "${SI_MODULES_DIR}" -type f -name 'module.sh' -print0 | sort -z)
 }
@@ -42,9 +51,13 @@ wiz_catalog_items() {
 }
 
 wiz_list_profiles() {
-  local f
+  local f families
   for f in "${SI_PROFILES_DIR}"/*.json; do
     [[ -f "${f}" ]] || continue
+    families="$(si_preflight_field "${f}" "os_family" "any")"
+    if [[ "${families}" != "any" && " ${families} " != *" ${SI_OS_FAMILY} "* ]]; then
+      continue
+    fi
     basename "${f}" .json
   done
 }

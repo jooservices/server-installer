@@ -8,6 +8,8 @@ MODULE_TITLE="PHP"
 SI_PHP_VERSION="${SI_PHP_VERSION:-8.5}"
 SI_PHP_MODE="${SI_PHP_MODE:-cli}"
 
+si_php_macos_formula() { printf 'shivammathur/php/php@%s\n' "${SI_PHP_VERSION}"; }
+
 si_php_bin() {
   if command -v "php${SI_PHP_VERSION}" >/dev/null 2>&1; then
     printf 'php%s\n' "${SI_PHP_VERSION}"
@@ -47,11 +49,30 @@ si_php_fpm_ok() {
 }
 
 module_check() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    si_pkg_is_installed "$(si_php_macos_formula)"
+    return
+  fi
   si_php_version_ok && si_php_fpm_ok
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — php will refuse (mutex, panel owns the web stack)"
+  fi
   log_plan "PHP version=${SI_PHP_VERSION} mode=${SI_PHP_MODE}"
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    if module_check; then
+      log_plan "PHP ${SI_PHP_VERSION} (brew) already present"
+    else
+      log_plan "Will brew install $(si_php_macos_formula)"
+    fi
+    if [[ "${SI_PHP_MODE}" == "fpm" ]]; then
+      log_plan "Will 'brew services start' php-fpm"
+    fi
+    return
+  fi
   if si_php_version_ok; then
     log_plan "PHP ${SI_PHP_VERSION} CLI already present"
   else
@@ -147,12 +168,27 @@ module_apply() {
       ;;
   esac
 
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It manages the web stack itself — remove it before installing PHP."
+    return 1
+  fi
+
   if module_check; then
     return 0
   fi
 
   if [[ "${SI_DRY_RUN}" == "true" ]]; then
     module_plan
+    return 0
+  fi
+
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    si_pkg_install "$(si_php_macos_formula)"
+    if [[ "${SI_PHP_MODE}" == "fpm" ]]; then
+      si_brew_require || return 1
+      brew services start "$(si_php_macos_formula)" >/dev/null 2>&1 || true
+    fi
     return 0
   fi
 
@@ -182,6 +218,10 @@ module_apply() {
 }
 
 module_verify() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    module_check
+    return
+  fi
   si_php_version_ok || return 1
   if [[ "${SI_PHP_MODE}" == "fpm" ]]; then
     if [[ "${SI_OS_FAMILY}" == "debian" ]]; then

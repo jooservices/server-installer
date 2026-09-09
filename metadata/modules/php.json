@@ -1,8 +1,9 @@
 {
-  "requires_systemd": true,
+  "requires_systemd": false,
   "os_family": [
     "debian",
-    "redhat"
+    "redhat",
+    "macos"
   ],
   "arch": [
     "amd64",
@@ -10,5 +11,5 @@
   ],
   "needs_lvm": false,
   "needs_docker": false,
-  "note": ""
+  "note": "module_apply already tolerates missing systemd (skips FPM enable/restart); macOS installs via Homebrew (shivammathur/php tap) instead of apt/dnf."
 }

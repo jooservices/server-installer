@@ -1,0 +1,17 @@
+{
+  "profile_name": "workstation-mac",
+  "description": "macOS dev workstation bootstrap: Homebrew + Oh My Zsh + PHP/Redis/MariaDB/MongoDB via brew. No sudo required.",
+  "os_family": ["macos"],
+  "modules": [
+    "homebrew",
+    "oh_my_zsh",
+    "php",
+    "redis",
+    "mariadb",
+    "mongodb"
+  ],
+  "env": {
+    "SI_PHP_VERSION": "8.5",
+    "SI_PHP_MODE": "fpm"
+  }
+}

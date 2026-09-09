@@ -89,6 +89,7 @@ Push to `master` / `develop`: syntax check → shellcheck → coverage map → e
 | `stale.yml` | Mark stale | Issues/PRs |
 | `link-check.yml` | Check Markdown links | Weekly lychee |
 | `release.yml` | Release | Tag `v*.*.*` on master |
+| `macos-smoke.yml` | macOS smoke | `macos-latest`; path-filtered to macOS-relevant files + manual dispatch; not part of the required gate |
 
 ## Dependabot
 

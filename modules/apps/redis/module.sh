@@ -5,10 +5,18 @@ MODULE_ID="redis"
 MODULE_TITLE="Redis"
 
 module_check() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    si_pkg_is_installed redis
+    return
+  fi
   command -v docker >/dev/null 2>&1 && si_docker_container_exists redis
 }
 
 module_plan() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    if module_check; then log_plan "redis (brew) already installed"; else log_plan "Will brew install redis"; fi
+    return
+  fi
   if si_docker_container_exists valkey 2>/dev/null; then
     log_plan "Valkey detected — redis will refuse (mutex)"
   fi
@@ -17,6 +25,14 @@ module_plan() {
 }
 
 module_apply() {
+  if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    if module_check; then return 0; fi
+    if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
+    si_pkg_install redis
+    si_brew_require || return 1
+    brew services start redis >/dev/null 2>&1 || true
+    return 0
+  fi
   si_docker_require || return 1
   if si_docker_container_exists valkey; then
     log_error "Valkey is installed. Remove it before installing Redis."

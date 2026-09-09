@@ -1,0 +1,13 @@
+{
+  "requires_systemd": false,
+  "os_family": [
+    "macos"
+  ],
+  "arch": [
+    "amd64",
+    "arm64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": false,
+  "note": "Never run as root — Homebrew refuses. Prerequisite for other brew-backed modules (php, redis, mariadb, mongodb on macOS)."
+}

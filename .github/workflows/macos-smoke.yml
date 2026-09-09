@@ -1,0 +1,54 @@
+# macOS workstation modules (homebrew, oh_my_zsh, brew-backed php/redis/
+# mariadb/mongodb). Separate from ci.yml's required gate — macos-latest
+# runners are slower/costlier than Linux, so this only runs when relevant
+# paths change, plus on demand.
+name: macOS smoke
+
+on:
+  pull_request:
+    branches: [master, develop]
+    paths:
+      - 'lib/os.sh'
+      - 'lib/pkg.sh'
+      - 'lib/metadata.sh'
+      - 'lib/preflight.sh'
+      - 'modules/workstation/**'
+      - 'modules/services/php/module.sh'
+      - 'modules/apps/redis/module.sh'
+      - 'modules/data/mariadb/module.sh'
+      - 'modules/data/mongodb/module.sh'
+      - 'metadata/modules/homebrew.json'
+      - 'metadata/modules/oh_my_zsh.json'
+      - 'metadata/modules/php.json'
+      - 'metadata/modules/redis.json'
+      - 'metadata/modules/mariadb.json'
+      - 'metadata/modules/mongodb.json'
+      - 'profiles/workstation-mac.json'
+      - 'wizard/catalog.sh'
+      - 'tests/macos.sh'
+      - 'tests/e2e/macos.sh'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  macos-smoke:
+    name: macOS smoke (macos-latest)
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Static checks (mocked, no real brew)
+        run: bash ./tests/macos.sh
+
+      - name: Real install E2E (this runner is an ephemeral GitHub-hosted VM)
+        run: bash ./tests/e2e/macos.sh

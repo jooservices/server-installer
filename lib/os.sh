@@ -23,6 +23,10 @@ si_detect_os() {
     SI_OS_ID="${ID:-unknown}"
     SI_OS_VERSION="${VERSION_ID:-unknown}"
     SI_OS_CODENAME="${VERSION_CODENAME:-unknown}"
+  elif [[ "$(uname -s 2>/dev/null)" == "Darwin" ]]; then
+    SI_OS_ID="macos"
+    SI_OS_VERSION="$(sw_vers -productVersion 2>/dev/null || echo unknown)"
+    SI_OS_CODENAME="macos"
   fi
 
   case "${SI_OS_ID}" in
@@ -37,6 +41,10 @@ si_detect_os() {
       else
         SI_PKG_MANAGER="yum"
       fi
+      ;;
+    macos)
+      SI_OS_FAMILY="macos"
+      SI_PKG_MANAGER="brew"
       ;;
     *)
       SI_OS_FAMILY="unknown"

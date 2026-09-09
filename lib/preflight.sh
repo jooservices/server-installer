@@ -83,7 +83,7 @@ si_preflight_check() {
     return 0
   fi
 
-  if [[ "$(si_preflight_field "${file}" "needs_docker" "false")" == "true" ]]; then
+  if [[ "$(si_preflight_field "${file}" "needs_docker" "false")" == "true" && "${SI_OS_FAMILY}" != "macos" ]]; then
     if [[ "${SI_SYSTEMD_ACTIVE}" != "true" ]]; then
       printf 'WARN|Container/host without systemd — DinD or manual dockerd may be required\n'
       return 0

@@ -1,6 +1,7 @@
 {
   "profile_name": "obs-lite",
   "description": "Lite metrics stack: Prometheus + node_exporter + Grafana",
+  "os_family": ["debian", "redhat"],
   "modules": [
     "prometheus",
     "node_exporter",
