@@ -184,6 +184,9 @@ module_apply() {
   fi
 
   if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
+    si_brew_require || return 1
+    brew tap shivammathur/php >/dev/null 2>&1 || true
+    brew trust shivammathur/php >/dev/null 2>&1 || true
     si_pkg_install "$(si_php_macos_formula)"
     if [[ "${SI_PHP_MODE}" == "fpm" ]]; then
       si_brew_require || return 1
