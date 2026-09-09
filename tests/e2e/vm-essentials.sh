@@ -62,6 +62,8 @@ echo "=== E2E vm-essentials: apply ==="
 echo "=== E2E vm-essentials: assertions ==="
 assert_cmd "zip installed" command -v zip
 assert_cmd "unzip installed" command -v unzip
+assert_cmd "nano installed" command -v nano
+assert_cmd "git installed" command -v git
 assert_cmd "sudoers drop-in exists" test -f /etc/sudoers.d/z99-deploy-nopasswd
 assert_cmd "deploy passwordless sudo" su -s /bin/bash -c 'sudo -n true' deploy
 assert_cmd "timesync: chrony package or binary" bash -c 'command -v chronyd || command -v chronyc || { command -v dpkg >/dev/null 2>&1 && dpkg -s chrony >/dev/null 2>&1; } || { command -v rpm >/dev/null 2>&1 && rpm -q chrony >/dev/null 2>&1; }'

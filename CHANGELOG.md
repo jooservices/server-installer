@@ -41,6 +41,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   directly (won't survive a reboot without systemd). Live-verified end to
   end against a real GitHub org (registration, online status, restart
   after the process was killed) during development.
+- `packages` module now also installs `nano` and `git` (previously
+  zip/unzip only), matching the legacy bash tooling's base package set.
+- `php` module (Linux): installs a much wider extension set matching the
+  legacy bash tooling — `dev`, `intl`, `xmlrpc`, `xsl`, `yaml`, `imagick`,
+  `gd`, `memcached`, `mysql`, `sqlite3`, `ldap`, plus PECL-equivalents
+  `redis`, `mongodb`, `apcu`, `pcov` — installed via native ondrej/php
+  (Debian) or Remi (RHEL) packages rather than compiling with
+  `pecl install`, since both repos already ship prebuilt packages for
+  these; faster, no build toolchain required, and doesn't need the old
+  script's manual `php.ini` editing after `pecl uninstall -r`. Each
+  extension is attempted individually and best-effort (a distro/version
+  without a given package just logs a warning) so one missing package
+  never breaks the required baseline install. Live-verified in a real
+  Ubuntu 24.04/PHP 8.5 container: all 15 extensions installed and loaded.
 
 ### Fixed
 

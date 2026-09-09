@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Install base archive tools: zip + unzip.
+# Install base tools: zip, unzip, nano, git.
 
 MODULE_ID="packages"
-MODULE_TITLE="Base packages (zip, unzip)"
+MODULE_TITLE="Base packages (zip, unzip, nano, git)"
 
-SI_PACKAGES_LIST=(zip unzip)
+SI_PACKAGES_LIST=(zip unzip nano git)
 
 module_check() {
   local pkg
