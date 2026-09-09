@@ -12,6 +12,10 @@ module_check() {
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — adguard will refuse (mutex, panel may own port 53 via BIND)"
+  fi
   if command -v pihole >/dev/null 2>&1 || [[ -d /etc/pihole ]]; then
     log_plan "Pi-hole detected — adguard will refuse (mutex)"
   fi
@@ -19,6 +23,11 @@ module_plan() {
 }
 
 module_apply() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It may own port 53 via BIND — remove it before installing AdGuard Home."
+    return 1
+  fi
   if command -v pihole >/dev/null 2>&1 || [[ -d /etc/pihole ]]; then
     log_error "Pi-hole is installed. Remove it before installing AdGuard Home."
     return 1

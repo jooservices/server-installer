@@ -9,6 +9,10 @@ module_check() {
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — haproxy will refuse (mutex, panel owns the web stack)"
+  fi
   if command -v caddy >/dev/null 2>&1 && [[ "${SI_FORCE_BOTH_PROXIES:-false}" != "true" ]]; then
     log_plan "Caddy detected — set SI_FORCE_BOTH_PROXIES=true to install haproxy anyway"
   fi
@@ -16,6 +20,11 @@ module_plan() {
 }
 
 module_apply() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It manages the web stack itself — remove it before installing HAProxy."
+    return 1
+  fi
   if command -v caddy >/dev/null 2>&1 && [[ "${SI_FORCE_BOTH_PROXIES:-false}" != "true" ]]; then
     log_error "Caddy is installed. Uninstall or set SI_FORCE_BOTH_PROXIES=true"
     return 1

@@ -1,0 +1,17 @@
+{
+  "profile_name": "web-panel",
+  "description": "New VM -> full hosting panel. Virtualmin installs Apache/Nginx + PHP + MariaDB + mail/DNS itself; do not compose with apache/nginx/php/mariadb/mysql/certbot/haproxy/caddy/traefik/nginx_proxy_manager/adguard/pihole/webmin.",
+  "os_family": ["debian", "redhat"],
+  "modules": [
+    "packages",
+    "sudo_nopass",
+    "timesync",
+    "firewall",
+    "fail2ban",
+    "virtualmin"
+  ],
+  "env": {
+    "SI_VIRTUALMIN_BUNDLE": "LAMP",
+    "SI_VIRTUALMIN_TYPE": "full"
+  }
+}

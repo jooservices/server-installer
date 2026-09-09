@@ -1,0 +1,14 @@
+{
+  "requires_systemd": false,
+  "os_family": [
+    "debian",
+    "redhat"
+  ],
+  "arch": [
+    "amd64",
+    "arm64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": false,
+  "note": "Standalone admin panel. Mutex with apache/nginx/php/mariadb/mysql/certbot/haproxy/caddy/traefik/nginx_proxy_manager/adguard/pihole/virtualmin — it manages the web stack itself."
+}

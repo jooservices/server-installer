@@ -9,10 +9,19 @@ module_check() {
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — certbot will refuse (mutex, panel manages its own Let's Encrypt integration)"
+  fi
   if module_check; then log_plan "certbot already installed"; else log_plan "Will install certbot (+ nginx/apache plugin if those exist)"; fi
 }
 
 module_apply() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It manages its own Let's Encrypt integration — remove it before installing certbot."
+    return 1
+  fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
   if module_check; then return 0; fi
 

@@ -1,0 +1,13 @@
+{
+  "requires_systemd": true,
+  "os_family": [
+    "debian",
+    "redhat"
+  ],
+  "arch": [
+    "amd64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": false,
+  "note": "Hosting panel (installs Webmin + Apache/Nginx + PHP + MariaDB + mail/DNS). Mutex with apache/nginx/php/mariadb/mysql/certbot/haproxy/caddy/traefik/nginx_proxy_manager/adguard/pihole/webmin. Postinstall (Apache/MariaDB/self) configures services via systemctl/dbus only — no systemd means those steps silently fail. arm64 is Grade-B upstream — WARN only."
+}
