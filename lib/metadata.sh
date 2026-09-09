@@ -25,7 +25,7 @@ required = {
     "needs_docker",
     "note",
 }
-families = {"any", "debian", "redhat"}
+families = {"any", "debian", "redhat", "macos"}
 architectures = {"any", "amd64", "arm64"}
 
 try:

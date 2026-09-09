@@ -35,6 +35,10 @@ module_check() {
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — apache will refuse (mutex, panel owns the web stack)"
+  fi
   if command -v nginx >/dev/null 2>&1; then
     if [[ "${SI_FORCE_BOTH_WEBSERVERS:-false}" != "true" ]]; then
       log_plan "Nginx detected — apache will refuse unless SI_FORCE_BOTH_WEBSERVERS=true"
@@ -50,6 +54,11 @@ module_plan() {
 }
 
 module_apply() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It manages the web stack itself — remove it before installing Apache."
+    return 1
+  fi
   if command -v nginx >/dev/null 2>&1; then
     if [[ "${SI_FORCE_BOTH_WEBSERVERS:-false}" != "true" ]]; then
       log_error "Nginx is installed. Uninstall it or set SI_FORCE_BOTH_WEBSERVERS=true"

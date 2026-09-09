@@ -1,6 +1,7 @@
 {
   "profile_name": "vm-essentials",
   "description": "First-boot VM essentials: packages, sudo, NTP, LVM grow",
+  "os_family": ["debian", "redhat"],
   "modules": [
     "packages",
     "sudo_nopass",

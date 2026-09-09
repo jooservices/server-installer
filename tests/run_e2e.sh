@@ -51,7 +51,7 @@ verify_module_coverage() {
   )"
   while IFS= read -r id; do
     [[ -n "${id}" ]] || continue
-    if grep -R --quiet -E "(--modules[^[:space:]]*${id}|[[:space:]]${id}(,|[[:space:]]|$)|assert_cmd.*${id}|${id} container|vm-essentials|vm-docker)" \
+    if grep -R --quiet -E "(--modules[^[:space:]]*${id}|[,[:space:]]${id}(,|[[:space:]]|$)|assert_cmd.*${id}|${id} container)" \
       "${ROOT}/tests/e2e"/*.sh 2>/dev/null; then
       log "covered: ${id}"
     else
@@ -128,6 +128,12 @@ case "${SUITE}" in
   apache)
     run_suite apache apache.sh
     ;;
+  panel)
+    run_suite panel panel.sh
+    ;;
+  github-runner)
+    run_suite github-runner github_runner.sh
+    ;;
   adguard)
     run_suite adguard adguard.sh
     ;;
@@ -195,6 +201,8 @@ case "${SUITE}" in
     run_suite php-cli php-cli.sh
     run_suite web-nginx web-nginx.sh
     run_suite apache apache.sh
+    run_suite panel panel.sh
+    run_suite github-runner github_runner.sh
     run_suite devops devops.sh
     run_suite adguard adguard.sh
     run_suite gap-sys gap-sys.sh
@@ -214,7 +222,7 @@ case "${SUITE}" in
     run_suite profiles profiles.sh
     ;;
   *)
-    echo "Usage: $0 [all|coverage|essentials|docker|php-cli|web-nginx|apache|web|devops|adguard|gap-sys|gap-apps|apps-extra|apps-authelia|apps-authentik|data-store|data-mysql|data-valkey|iac-cli|iac-cm|system|obs-apps|obs-extra|wizard|profiles|full-gap]" >&2
+    echo "Usage: $0 [all|coverage|essentials|docker|php-cli|web-nginx|apache|panel|github-runner|web|devops|adguard|gap-sys|gap-apps|apps-extra|apps-authelia|apps-authentik|data-store|data-mysql|data-valkey|iac-cli|iac-cm|system|obs-apps|obs-extra|wizard|profiles|full-gap]" >&2
     exit 1
     ;;
 esac

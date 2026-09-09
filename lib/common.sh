@@ -25,6 +25,8 @@ source "${SI_LIB_DIR}/lock.sh"
 source "${SI_LIB_DIR}/download.sh"
 # shellcheck source=containers.sh
 source "${SI_LIB_DIR}/containers.sh"
+# shellcheck source=panel.sh
+source "${SI_LIB_DIR}/panel.sh"
 # shellcheck source=runner.sh
 source "${SI_LIB_DIR}/runner.sh"
 # shellcheck source=metadata.sh

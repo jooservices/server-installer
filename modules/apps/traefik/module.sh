@@ -9,11 +9,20 @@ module_check() {
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — traefik will refuse (mutex, panel owns port 80/443)"
+  fi
   if ! command -v docker >/dev/null 2>&1; then log_plan "Docker required"; fi
   if module_check; then log_plan "traefik exists"; else log_plan "Will run traefik:v3"; fi
 }
 
 module_apply() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It owns port 80/443 — remove it before installing Traefik."
+    return 1
+  fi
   if ! command -v docker >/dev/null 2>&1; then log_error "Docker required"; return 1; fi
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi

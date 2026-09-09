@@ -1,0 +1,15 @@
+{
+  "requires_systemd": false,
+  "os_family": [
+    "debian",
+    "redhat",
+    "macos"
+  ],
+  "arch": [
+    "amd64",
+    "arm64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": false,
+  "note": "Requires SI_GIT_USER_NAME and SI_GIT_USER_EMAIL. Linux targets SI_SUDO_USER (falls back like sudo_nopass/docker_group); macOS targets the invoking user — never root."
+}

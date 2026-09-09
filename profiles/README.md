@@ -19,6 +19,7 @@ Schema B: module list + optional `env` defaults (no secrets).
 | `env` | Applied when using `--profile` / wizard Express |
 | Override | Existing non-empty `SI_*` in the shell wins |
 | Secrets | Never in JSON — prompt or CI (`SI_MYSQL_ROOT_PASSWORD`, …) |
+| `os_family` (optional list) | Hides the profile from the wizard on a non-matching host; omit = `any` |
 
 ## Bundled presets
 
@@ -28,10 +29,15 @@ Schema B: module list + optional `env` defaults (no secrets).
 | `vm-docker` | Essentials + Docker |
 | `web-lamp` | Apache + PHP 8.5 CLI + MySQL |
 | `web-lemp` | Nginx + PHP-FPM 8.5 + MySQL |
+| `web-panel` | New VM → Virtualmin (owns the whole web/DB stack itself) |
+| `workstation-mac` | macOS: Homebrew + Oh My Zsh + PHP/Redis/MariaDB/MongoDB, no sudo |
 | `sec-baseline` | firewall + fail2ban |
 | `obs-lite` | prometheus + node_exporter + grafana |
 
 ```bash
 sudo ./bin/server-installer apply --profile web-lemp
 SI_PHP_VERSION=8.4 sudo ./bin/server-installer apply --profile web-lemp   # keeps 8.4
+
+# macOS — no sudo
+./bin/server-installer apply --profile workstation-mac
 ```

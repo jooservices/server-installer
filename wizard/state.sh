@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 # Wizard state (selected profile/modules/env) + mid-run resume.
+#
+# WIZ_ENV_KEYS is a plain (indexed) array of keys set via wiz_env_set —
+# NOT an associative array. macOS ships bash 3.2 (no `declare -A`), and
+# this wizard must run there without requiring a newer bash first.
+# wiz_env_set already exports the value immediately, so the key's live
+# value is always read back via indirect expansion (${!k}) rather than
+# a second lookup table.
 
 WIZ_MODE="${WIZ_MODE:-}"
 WIZ_PROFILE="${WIZ_PROFILE:-}"
@@ -8,7 +15,7 @@ WIZ_FORCE_PREFLIGHT="${WIZ_FORCE_PREFLIGHT:-false}"
 WIZ_STAGE="${WIZ_STAGE:-init}"
 WIZ_RESUME="${WIZ_RESUME:-ask}"   # ask|yes|no
 WIZ_STATE_FILE="${SI_WIZARD_STATE:-/tmp/si-wizard-state.json}"
-declare -A WIZ_ENV=()
+WIZ_ENV_KEYS=()
 
 wiz_state_reset() {
   WIZ_MODE=""
@@ -16,7 +23,7 @@ wiz_state_reset() {
   WIZ_MODULES=()
   WIZ_FORCE_PREFLIGHT=false
   WIZ_STAGE="init"
-  WIZ_ENV=()
+  WIZ_ENV_KEYS=()
 }
 
 wiz_modules_csv() {
@@ -67,14 +74,21 @@ wiz_modules_set_csv() {
 
 wiz_env_set() {
   local key="$1" val="$2"
-  WIZ_ENV["${key}"]="${val}"
+  local k
+  for k in "${WIZ_ENV_KEYS[@]+"${WIZ_ENV_KEYS[@]}"}"; do
+    [[ "${k}" == "${key}" ]] && export "${key}=${val}" && return 0
+  done
+  WIZ_ENV_KEYS+=("${key}")
   export "${key}=${val}"
 }
 
 wiz_env_export_all() {
   local k
-  for k in "${!WIZ_ENV[@]}"; do
-    export "${k}=${WIZ_ENV[$k]}"
+  for k in "${WIZ_ENV_KEYS[@]+"${WIZ_ENV_KEYS[@]}"}"; do
+    # ${k} holds a variable NAME (e.g. SI_PHP_MODE) — this exports that
+    # variable using its current value, not a variable literally named "k".
+    # shellcheck disable=SC2163
+    export "${k}"
   done
 }
 
@@ -92,8 +106,8 @@ wiz_state_save() {
   env_json="$(
     {
       local k
-      for k in "${!WIZ_ENV[@]}"; do
-        printf '%s\t%s\n' "${k}" "${WIZ_ENV[$k]}"
+      for k in "${WIZ_ENV_KEYS[@]+"${WIZ_ENV_KEYS[@]}"}"; do
+        printf '%s\t%s\n' "${k}" "${!k}"
       done
     } | python3 -c '
 import json, sys

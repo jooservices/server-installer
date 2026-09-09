@@ -19,6 +19,7 @@ Presets under `profiles/*.json` (schema B):
 - `env` applies only when the variable is **unset or empty**
 - **Never** put secrets in profile JSON
 - One web server and one DB family per web profile (mutex)
+- Optional `os_family` (list, e.g. `["macos"]`) hides a profile from the wizard on a non-matching host; omit it for `any` (default, current behavior for Linux profiles is `["debian","redhat"]`)
 
 ## Bundled
 
@@ -28,6 +29,8 @@ Presets under `profiles/*.json` (schema B):
 | `vm-docker` | essentials + Docker |
 | `web-lamp` | Apache + PHP 8.5 CLI + MySQL |
 | `web-lemp` | Nginx + PHP-FPM 8.5 + MySQL |
+| `web-panel` | New VM → Virtualmin (owns the whole web/DB stack itself) |
+| `workstation-mac` | macOS: Homebrew + Oh My Zsh + PHP/Redis/MariaDB/MongoDB, no sudo |
 | `sec-baseline` | firewall + fail2ban |
 | `obs-lite` | prometheus + node_exporter + grafana |
 

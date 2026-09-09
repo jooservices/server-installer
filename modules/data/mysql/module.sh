@@ -9,6 +9,10 @@ module_check() {
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — mysql will refuse (mutex, panel owns the DB stack)"
+  fi
   if si_docker_container_exists mariadb 2>/dev/null; then
     log_plan "MariaDB detected — mysql will refuse (mutex)"
   fi
@@ -17,6 +21,11 @@ module_plan() {
 }
 
 module_apply() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It manages the DB stack itself — remove it before installing MySQL."
+    return 1
+  fi
   si_docker_require || return 1
   if si_docker_container_exists mariadb; then
     log_error "MariaDB is installed. Remove it before installing MySQL."

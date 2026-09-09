@@ -1,6 +1,7 @@
 {
   "profile_name": "vm-docker",
   "description": "VM essentials plus Docker Engine and docker group",
+  "os_family": ["debian", "redhat"],
   "modules": [
     "packages",
     "sudo_nopass",

@@ -122,7 +122,7 @@ wiz_profile_apply_env() {
     key="${line%%=*}"
     val="${line#*=}"
     # Prefer existing wizard/shell values.
-    if [[ -n "${WIZ_ENV[$key]:-}" || -n "${!key:-}" ]]; then
+    if [[ -n "${!key:-}" ]]; then
       continue
     fi
     wiz_env_set "${key}" "${val}"

@@ -9,6 +9,10 @@ module_check() {
 }
 
 module_plan() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_plan "${panel} detected — nginx_proxy_manager will refuse (mutex, panel owns the web stack)"
+  fi
   if ! command -v docker >/dev/null 2>&1; then log_plan "Docker required"; fi
   if si_docker_container_exists traefik 2>/dev/null; then
     log_plan "Traefik detected — NPM can coexist on remapped ports"
@@ -17,6 +21,11 @@ module_plan() {
 }
 
 module_apply() {
+  local panel
+  if panel="$(si_installed_panel)"; then
+    log_error "${panel} is installed. It manages the web stack itself — remove it before installing Nginx Proxy Manager."
+    return 1
+  fi
   si_docker_require || return 1
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi

@@ -1,0 +1,14 @@
+{
+  "requires_systemd": false,
+  "os_family": [
+    "debian",
+    "redhat"
+  ],
+  "arch": [
+    "amd64",
+    "arm64"
+  ],
+  "needs_lvm": false,
+  "needs_docker": false,
+  "note": "Requires SI_GITHUB_TOKEN (PAT) + exactly one of SI_GITHUB_REPO or SI_GITHUB_ORG. Token only used to mint a short-lived registration token via the GitHub API; briefly visible in process args (curl header, su -c), same exposure level as other secrets already passed through this project's modules. With systemd, installs as a service (svc.sh); without it, starts run.sh directly (falls back gracefully, but won't survive a reboot without systemd). One runner per host (fixed SI_GITHUB_RUNNER_DIR)."
+}

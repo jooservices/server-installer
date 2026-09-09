@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `webmin` and `virtualmin` modules (`panel` area) — official upstream
+  installers wrapped, install-only. Mutex both ways against `apache`,
+  `nginx`, `php`, `mariadb`, `mysql`, `certbot`, `haproxy`, `caddy`,
+  `traefik`, `nginx_proxy_manager`, `adguard`, `pihole`, and each other —
+  a panel owns the web/DB stack once installed.
+- `web-panel` profile: fresh VM → Virtualmin (LAMP, full).
+- `apply|plan --preflight` (`SI_ENFORCE_PREFLIGHT`) — opt-in CLI enforcement
+  of the metadata PASS/WARN/BLOCK gate the wizard already always runs.
+  Off by default so existing CI/E2E (no systemd in the containers) is
+  unaffected.
+- macOS support: new `os_family: macos` + `brew` package-manager backend
+  (`lib/os.sh`, `lib/pkg.sh`, `lib/metadata.sh`). New `workstation` area
+  (`homebrew`, `oh_my_zsh`); `php`, `redis`, `mariadb`, `mongodb` gained a
+  macOS/Homebrew branch alongside their existing Linux path (same
+  `MODULE_ID`). `workstation-mac` profile. Wizard catalog and profile list
+  now filter by `os_family`, so a Mac only ever sees `workstation` items —
+  no manual OS branching in the wizard. Never runs under sudo (Homebrew and
+  the Oh My Zsh installer both refuse root). `make macos-test` (mocked,
+  no Darwin/brew required) plus a separate `macos-smoke.yml` CI workflow
+  (`macos-latest`, path-filtered, not part of the required gate) for real
+  installs.
+- `git_identity` module (`essentials`) — git user.name/user.email + ed25519
+  SSH key, cross-platform (Linux targets `SI_SUDO_USER`, macOS targets the
+  invoking user).
+- `github_runner` module (`apps`) — registers a self-hosted GitHub Actions
+  runner. Provide `SI_GITHUB_TOKEN` (PAT) + exactly one of `SI_GITHUB_REPO`
+  or `SI_GITHUB_ORG`; the token only mints a short-lived registration
+  token via the GitHub API, never written to disk. Installs as a systemd
+  service (`svc.sh`) when systemd is active, otherwise starts `run.sh`
+  directly (won't survive a reboot without systemd). Live-verified end to
+  end against a real GitHub org (registration, online status, restart
+  after the process was killed) during development.
+
+### Fixed
+
+- `tests/run_e2e.sh` module-coverage regex: two unconditional literals
+  (`vm-essentials`, `vm-docker`) made the check report every module as
+  "covered" regardless of whether it had a real E2E reference, and a
+  second gap meant a module past the first item in a `--modules a,b,c`
+  list (e.g. `docker_group` in `docker,docker_group`) was never detected
+  either way. `packages`/`docker`/`docker_group`/etc. were already
+  genuinely exercised via `--profile vm-essentials`/`vm-docker` or later
+  positions in a module list; only `timesync`/`lvm_extend` needed their
+  existing assertions re-labeled to name the module they check.
+- `virtualmin.json` preflight metadata: `requires_systemd` was `false`;
+  Virtualmin's postinstall configures Apache/MariaDB/itself via
+  `systemctl`/dbus only, so a non-systemd host silently ends up with a
+  half-configured panel. Now `true`.
+
 ## [1.1.0] - 2026-09-06
 
 ### Added
