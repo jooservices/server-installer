@@ -50,7 +50,9 @@ si_php_fpm_ok() {
 
 module_check() {
   if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
-    si_pkg_is_installed "$(si_php_macos_formula)"
+    si_pkg_is_installed "$(si_php_macos_formula)" || return 1
+    [[ "${SI_PHP_MODE}" != "fpm" ]] && return 0
+    si_brew_service_running "$(si_php_macos_formula)"
     return
   fi
   si_php_version_ok && si_php_fpm_ok
@@ -190,7 +192,9 @@ module_apply() {
     si_pkg_install "$(si_php_macos_formula)"
     if [[ "${SI_PHP_MODE}" == "fpm" ]]; then
       si_brew_require || return 1
-      brew services start "$(si_php_macos_formula)" >/dev/null 2>&1 || true
+      brew services start "$(si_php_macos_formula)"
+      si_brew_service_running "$(si_php_macos_formula)"
+      return
     fi
     return 0
   fi

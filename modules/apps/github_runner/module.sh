@@ -72,7 +72,7 @@ si_gh_runner_start() {
     return 0
   fi
   log_warn "No systemd — starting run.sh directly (won't survive a reboot without systemd)"
-  su -s /bin/bash -c "cd '${SI_GITHUB_RUNNER_DIR}' && nohup ./run.sh >'${SI_GITHUB_RUNNER_DIR}/run.log' 2>&1 & disown" \
+  su -s /bin/bash -c "cd $(printf '%q' "${SI_GITHUB_RUNNER_DIR}") && nohup ./run.sh >$(printf '%q' "${SI_GITHUB_RUNNER_DIR}/run.log") 2>&1 & disown" \
     "${SI_GITHUB_RUNNER_USER}"
   sleep 3
   si_gh_runner_process_running || {
@@ -84,7 +84,10 @@ si_gh_runner_start() {
 module_check() {
   [[ -f "${SI_GITHUB_RUNNER_DIR}/.runner" ]] || return 1
   if [[ "${SI_SYSTEMD_ACTIVE}" == "true" ]]; then
-    systemctl list-units --all 2>/dev/null | grep -q 'actions\.runner\.'
+    local svc
+    svc="$(cat "${SI_GITHUB_RUNNER_DIR}/.service" 2>/dev/null || true)"
+    [[ -n "${svc}" ]] || return 1
+    systemctl is-active --quiet "${svc}"
     return
   fi
   si_gh_runner_process_running
@@ -135,7 +138,7 @@ module_apply() {
   tar="/tmp/actions-runner.tar.gz"
   si_download "${url}" "${tar}"
 
-  su -s /bin/bash -c "tar -xzf '${tar}' -C '${SI_GITHUB_RUNNER_DIR}'" "${SI_GITHUB_RUNNER_USER}"
+  su -s /bin/bash -c "tar -xzf $(printf '%q' "${tar}") -C $(printf '%q' "${SI_GITHUB_RUNNER_DIR}")" "${SI_GITHUB_RUNNER_USER}"
   rm -f "${tar}"
 
   local reg_token
@@ -156,9 +159,13 @@ except Exception:
     return 1
   fi
 
+  # Every interpolated value (registration token included, since it comes
+  # from a JSON API response) is shell-escaped via printf %q — a value
+  # containing a single quote must not be able to break out of the
+  # command string passed to `su -c`.
   local config_cmd
-  config_cmd="cd '${SI_GITHUB_RUNNER_DIR}' && ./config.sh --url '$(si_gh_runner_url)' --token '${reg_token}' --name '${SI_GITHUB_RUNNER_NAME}' --unattended --replace"
-  [[ -n "${SI_GITHUB_RUNNER_LABELS}" ]] && config_cmd+=" --labels '${SI_GITHUB_RUNNER_LABELS}'"
+  config_cmd="cd $(printf '%q' "${SI_GITHUB_RUNNER_DIR}") && ./config.sh --url $(printf '%q' "$(si_gh_runner_url)") --token $(printf '%q' "${reg_token}") --name $(printf '%q' "${SI_GITHUB_RUNNER_NAME}") --unattended --replace"
+  [[ -n "${SI_GITHUB_RUNNER_LABELS}" ]] && config_cmd+=" --labels $(printf '%q' "${SI_GITHUB_RUNNER_LABELS}")"
   su -s /bin/bash -c "${config_cmd}" "${SI_GITHUB_RUNNER_USER}"
 
   si_gh_runner_start

@@ -32,6 +32,14 @@ si_brew_require() {
   return 0
 }
 
+# True when `brew services` reports the formula's service as started.
+# Accepts a bare formula or a fully-qualified tap/formula name — `brew
+# services list` always shows the short name in its Name column.
+si_brew_service_running() {
+  local name="${1##*/}"
+  brew services list 2>/dev/null | grep -qE "^${name}[[:space:]]+started"
+}
+
 si_pkg_install() {
   local pkgs=("$@")
   local missing=()

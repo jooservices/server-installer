@@ -8,6 +8,7 @@ on:
   pull_request:
     branches: [master, develop]
     paths:
+      - '.github/workflows/macos-smoke.yml'
       - 'lib/os.sh'
       - 'lib/pkg.sh'
       - 'lib/metadata.sh'

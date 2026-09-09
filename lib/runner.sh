@@ -115,7 +115,9 @@ si_run_modules() {
 
     log_info "[${idx}/${total}] ${MODULE_TITLE:-${id}} (${mode})"
 
-    if [[ "${SI_ENFORCE_PREFLIGHT:-false}" == "true" ]]; then
+    # --preflight only gates plan/apply (doctor maps to "plan" above), per
+    # the documented CLI contract — verify must always run regardless.
+    if [[ "${SI_ENFORCE_PREFLIGHT:-false}" == "true" && ( "${mode}" == "plan" || "${mode}" == "apply" ) ]]; then
       local pf_line pf_verdict pf_reason
       pf_line="$(si_preflight_check "${id}")"
       pf_verdict="${pf_line%%|*}"

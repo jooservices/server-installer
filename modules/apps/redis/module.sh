@@ -6,7 +6,7 @@ MODULE_TITLE="Redis"
 
 module_check() {
   if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
-    si_pkg_is_installed redis
+    si_pkg_is_installed redis && si_brew_service_running redis
     return
   fi
   command -v docker >/dev/null 2>&1 && si_docker_container_exists redis
@@ -30,8 +30,9 @@ module_apply() {
     if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
     si_pkg_install redis
     si_brew_require || return 1
-    brew services start redis >/dev/null 2>&1 || true
-    return 0
+    brew services start redis
+    si_brew_service_running redis
+    return
   fi
   si_docker_require || return 1
   if si_docker_container_exists valkey; then

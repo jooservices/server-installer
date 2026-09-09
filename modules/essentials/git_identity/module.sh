@@ -71,6 +71,9 @@ module_check() {
 }
 
 module_plan() {
+  if [[ "${SI_OS_FAMILY}" == "macos" && "${EUID:-$(id -u)}" -eq 0 ]]; then
+    log_plan "Running as root on macOS — would configure git identity for root; re-run without sudo"
+  fi
   if [[ -z "${SI_GIT_USER_NAME:-}" || -z "${SI_GIT_USER_EMAIL:-}" ]]; then
     log_plan "Set SI_GIT_USER_NAME and SI_GIT_USER_EMAIL"
     return
@@ -90,6 +93,10 @@ module_plan() {
 }
 
 module_apply() {
+  if [[ "${SI_OS_FAMILY}" == "macos" && "${EUID:-$(id -u)}" -eq 0 ]]; then
+    log_error "Refusing to run as root on macOS — this would configure git identity/SSH key for root. Re-run without sudo."
+    return 1
+  fi
   if [[ -z "${SI_GIT_USER_NAME:-}" || -z "${SI_GIT_USER_EMAIL:-}" ]]; then
     log_error "SI_GIT_USER_NAME and SI_GIT_USER_EMAIL are required"
     return 1

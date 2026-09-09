@@ -6,7 +6,7 @@ MODULE_TITLE="MongoDB"
 
 module_check() {
   if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
-    si_pkg_is_installed mongodb-community
+    si_pkg_is_installed mongodb-community && si_brew_service_running mongodb-community
     return
   fi
   command -v docker >/dev/null 2>&1 && si_docker_container_exists mongodb
@@ -33,8 +33,9 @@ module_apply() {
     brew tap mongodb/brew >/dev/null
     brew trust mongodb/brew >/dev/null 2>&1 || true
     si_pkg_install mongodb-community
-    brew services start mongodb-community >/dev/null 2>&1 || true
-    return 0
+    brew services start mongodb-community
+    si_brew_service_running mongodb-community
+    return
   fi
   si_docker_require || return 1
   if module_check; then return 0; fi

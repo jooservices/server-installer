@@ -6,7 +6,7 @@ MODULE_TITLE="MariaDB"
 
 module_check() {
   if [[ "${SI_OS_FAMILY}" == "macos" ]]; then
-    si_pkg_is_installed mariadb
+    si_pkg_is_installed mariadb && si_brew_service_running mariadb
     return
   fi
   command -v docker >/dev/null 2>&1 && si_docker_container_exists mariadb
@@ -34,9 +34,10 @@ module_apply() {
     if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
     si_pkg_install mariadb
     si_brew_require || return 1
-    brew services start mariadb >/dev/null 2>&1 || true
+    brew services start mariadb
     log_warn "No root password set automatically — run 'mysql_secure_installation' to secure it"
-    return 0
+    si_brew_service_running mariadb
+    return
   fi
   local panel
   if panel="$(si_installed_panel)"; then
