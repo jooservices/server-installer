@@ -54,7 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   extension is attempted individually and best-effort (a distro/version
   without a given package just logs a warning) so one missing package
   never breaks the required baseline install. Live-verified in a real
-  Ubuntu 24.04/PHP 8.5 container: all 15 extensions installed and loaded.
+  Ubuntu 24.04/PHP 8.5 container: all 15 optional packages installed
+  (`dev` provides build headers, not a loadable module; the other 14
+  all confirmed loaded via `php -m`).
 
 ### Fixed
 
