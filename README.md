@@ -23,6 +23,7 @@ CLI (and optional wizard) to bootstrap and harden Linux servers for JOOservices 
 
 ```bash
 ./bin/server-installer doctor --profile vm-essentials
+./bin/server-installer advise --modules php,mariadb
 ./bin/server-installer-wizard
 ./bin/server-installer-wizard --unattended --profile vm-essentials --force
 sudo ./bin/server-installer apply --profile vm-essentials
@@ -70,6 +71,8 @@ sudo ./bin/server-installer apply --modules postgres,redis,rabbitmq
 
 ```bash
 make lint              # shellcheck
+make downloads-test     # download lock + SHA-256 verification
+make advice-test        # read-only sizing advice
 make e2e-coverage
 make e2e               # full suites (required before Done)
 ```

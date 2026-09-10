@@ -44,8 +44,10 @@ module_apply() {
   fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
-  # nosemgrep: bash.curl.security.curl-pipe-bash.curl-pipe-bash -- upstream Homebrew installer
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  local script="${TMPDIR:-/tmp}/homebrew-install.sh"
+  si_download_locked homebrew-install "${script}"
+  NONINTERACTIVE=1 /bin/bash "${script}"
+  rm -f "${script}"
   eval "$("${brew_bin}" shellenv)"
 
   local profile="${HOME}/.zprofile"

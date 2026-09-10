@@ -42,7 +42,7 @@ module_apply() {
 
   si_pkg_install curl
   local script="/tmp/webmin-setup-repo.sh"
-  si_download "https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh" "${script}"
+  si_download_locked webmin-setup "${script}"
   sh "${script}" --force
 
   case "${SI_PKG_MANAGER}" in

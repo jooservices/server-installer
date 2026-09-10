@@ -62,7 +62,7 @@ module_apply() {
 
   si_pkg_install curl
   local script="/tmp/virtualmin-install.sh"
-  si_download "https://download.virtualmin.com/virtualmin-install.sh" "${script}"
+  si_download_locked virtualmin-install "${script}"
 
   local args=(--bundle "${SI_VIRTUALMIN_BUNDLE}" --type "${SI_VIRTUALMIN_TYPE}" --yes)
   [[ -n "${SI_VIRTUALMIN_HOSTNAME:-}" ]] && args+=(--hostname "${SI_VIRTUALMIN_HOSTNAME}")
