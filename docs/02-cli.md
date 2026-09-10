@@ -8,6 +8,7 @@ Entry: `bin/server-installer`
 | --- | --- |
 | `doctor` | OS facts + module plan (no changes) |
 | `plan` | Same as doctor for selected modules |
+| `advise` | Read-only initial PHP-FPM / MariaDB/MySQL sizing advice |
 | `apply` | Idempotent install/configure |
 | `verify` | Re-check after apply |
 
@@ -17,6 +18,7 @@ Entry: `bin/server-installer`
 ./bin/server-installer apply --profile web-lemp
 ./bin/server-installer apply --modules nginx,php,mysql
 ./bin/server-installer apply --profile vm-essentials --dry-run
+./bin/server-installer advise --modules php,mariadb
 ```
 
 - `--profile` loads `profiles/<name>.json` modules **and** applies `env` defaults when variables are unset.
@@ -42,6 +44,21 @@ Examples:
 SI_PHP_MODE=fpm sudo ./bin/server-installer apply --modules nginx,php
 SI_MYSQL_ROOT_PASSWORD='…' sudo ./bin/server-installer apply --profile web-lemp
 sudo ./bin/server-installer apply --modules virtualmin --preflight
+```
+
+## Capacity advice
+
+`advise` reads host RAM and CPU facts, then prints conservative initial values
+and a config diff for the selected `php`, `mariadb`, or `mysql` modules. It
+never writes configuration, reloads services, or applies a profile.
+
+Review worker memory under real load before using a PHP-FPM value. Database
+advice assumes a shared host and caps the buffer pool at 25% of RAM; a
+dedicated database needs workload measurement before allocating more.
+
+```bash
+./bin/server-installer advise --modules php,mariadb
+./bin/server-installer advise --profile web-lemp
 ```
 
 Next: [Wizard](./03-wizard.md) · [Modules](./05-modules.md)

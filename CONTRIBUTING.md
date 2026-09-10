@@ -9,5 +9,5 @@ make hooks-install
 ```
 
 The hooks enforce Conventional Commits, run Gitleaks when installed, and run
-the ShellCheck, metadata, preflight, and module coverage gates. CI remains the
+the ShellCheck, metadata, preflight, download-lock, advice, and module coverage gates. CI remains the
 authoritative secret scan when Gitleaks is not installed locally.

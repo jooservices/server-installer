@@ -22,14 +22,13 @@ module_apply() {
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
-  local arch url zip
+  local arch zip
   arch="$(si_arch_suffix)"
-  url="https://github.com/grafana/loki/releases/download/v${SI_LOKI_VERSION}/loki-linux-${arch}.zip"
   zip="/tmp/loki.zip"
 
   si_pkg_install unzip
   si_ensure_user loki
-  si_download "${url}" "${zip}"
+  si_download_locked "loki-${SI_LOKI_VERSION}-linux-${arch}" "${zip}"
   mkdir -p /tmp/loki_extracted /etc/loki /var/lib/loki
   unzip -o "${zip}" -d /tmp/loki_extracted
   install -m 0755 "/tmp/loki_extracted/loki-linux-${arch}" /usr/local/bin/loki

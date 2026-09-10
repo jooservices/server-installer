@@ -28,9 +28,11 @@ module_apply() {
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
-  # nosemgrep: bash.curl.security.curl-pipe-bash.curl-pipe-bash -- upstream Oh My Zsh installer
+  local script="${TMPDIR:-/tmp}/oh-my-zsh-install.sh"
+  si_download_locked oh-my-zsh-install "${script}"
   RUNZSH=no CHSH=no KEEP_ZSHRC=yes \
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sh "${script}"
+  rm -f "${script}"
 }
 
 module_verify() { module_check; }

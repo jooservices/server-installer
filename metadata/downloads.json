@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "artifacts": {
+    "adguard-0.107.52-linux-amd64": {
+      "url": "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.52/AdGuardHome_linux_amd64.tar.gz",
+      "sha256": "a2645ecf23ccadbb0d97b324aef9bc67d126b8e394428ae5a23c2f1b73c5d140"
+    },
+    "adguard-0.107.52-linux-arm64": {
+      "url": "https://github.com/AdguardTeam/AdGuardHome/releases/download/v0.107.52/AdGuardHome_linux_arm64.tar.gz",
+      "sha256": "86ae7a7c2db9c158b9db9f350568485e3ccc43e7039624d1a5bc50bb1dee1048"
+    },
+    "cinc-install": {
+      "url": "https://omnitruck.cinc.sh/install.sh",
+      "sha256": "d3d359594d24ded13ffb1a6706a32cbe3feaf547d6d0df3378007cdb5282e366"
+    },
+    "github-runner-2.337.0-linux-amd64": {
+      "url": "https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz",
+      "sha256": "70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613"
+    },
+    "github-runner-2.337.0-linux-arm64": {
+      "url": "https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-arm64-2.337.0.tar.gz",
+      "sha256": "9b1dc70626422526e3c94767cf024896beb15da5342a3f4819bf2feac13e0393"
+    },
+    "homebrew-install": {
+      "url": "https://raw.githubusercontent.com/Homebrew/install/641127e1d6a9b5fd01dd4582abe174b7a4069bba/install.sh",
+      "sha256": "12479a24be3f5307eecac7cde670fad7118640f031229e964f544b1367b52a41"
+    },
+    "loki-3.0.0-linux-amd64": {
+      "url": "https://github.com/grafana/loki/releases/download/v3.0.0/loki-linux-amd64.zip",
+      "sha256": "6f6cb5cfb1ea9c00794b3928a7af0e448930b2854938f3a18012c707158c4f7a"
+    },
+    "loki-3.0.0-linux-arm64": {
+      "url": "https://github.com/grafana/loki/releases/download/v3.0.0/loki-linux-arm64.zip",
+      "sha256": "2f7b406fea48eccd7a6e08187d7dedb77cff38f4f04e271982a7185d3a68225c"
+    },
+    "node-exporter-1.8.2-linux-amd64": {
+      "url": "https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz",
+      "sha256": "6809dd0b3ec45fd6e992c19071d6b5253aed3ead7bf0686885a51d85c6643c66"
+    },
+    "node-exporter-1.8.2-linux-arm64": {
+      "url": "https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-arm64.tar.gz",
+      "sha256": "627382b9723c642411c33f48861134ebe893e70a63bcc8b3fc0619cd0bfac4be"
+    },
+    "oh-my-zsh-install": {
+      "url": "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/cd320b5506998f32284d37799592cb2ba43a3188/tools/install.sh",
+      "sha256": "5574b96e94dbcb769f0d1592fa83aeb6ca2caf41c6ae5d76fcc7f04c524b4f55"
+    },
+    "pihole-install": {
+      "url": "https://install.pi-hole.net",
+      "sha256": "bd558069a224910e4b6264a44e2cd4bdb5a8fb45d232e10e6fb91dd804590dc7"
+    },
+    "prometheus-2.53.0-linux-amd64": {
+      "url": "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz",
+      "sha256": "d9900a11e3c89261e6416e3c9989858bad7b206af8b6838dfe9a5392d8ddc60d"
+    },
+    "prometheus-2.53.0-linux-arm64": {
+      "url": "https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-arm64.tar.gz",
+      "sha256": "f3fb3c12db28155a791eba57f293c899ad753677a5aa8c327a80483b23ce98c6"
+    },
+    "promtail-3.0.0-linux-amd64": {
+      "url": "https://github.com/grafana/loki/releases/download/v3.0.0/promtail-linux-amd64.zip",
+      "sha256": "3a5120422a2a8aa26659a188d63f1425707ed42a1af274acc0a7797d851acf48"
+    },
+    "promtail-3.0.0-linux-arm64": {
+      "url": "https://github.com/grafana/loki/releases/download/v3.0.0/promtail-linux-arm64.zip",
+      "sha256": "a21152d2746915271d36b98bd7d1d496771571849f2386d9bff523326cb93a59"
+    },
+    "pulumi-3.261.0-linux-amd64": {
+      "url": "https://github.com/pulumi/pulumi/releases/download/v3.261.0/pulumi-v3.261.0-linux-x64.tar.gz",
+      "sha256": "39bc0d2427e22ead6039fad7a7337c2fdc53a68b737ccc52dc897d244aaa8853"
+    },
+    "pulumi-3.261.0-linux-arm64": {
+      "url": "https://github.com/pulumi/pulumi/releases/download/v3.261.0/pulumi-v3.261.0-linux-arm64.tar.gz",
+      "sha256": "631ab5c09455016087846c1142761cd16b2f1900dd71904a0c21193601f6fb0c"
+    },
+    "restic-0.17.3-linux-amd64": {
+      "url": "https://github.com/restic/restic/releases/download/v0.17.3/restic_0.17.3_linux_amd64.bz2",
+      "sha256": "5097faeda6aa13167aae6e36efdba636637f8741fed89bbf015678334632d4d3"
+    },
+    "restic-0.17.3-linux-arm64": {
+      "url": "https://github.com/restic/restic/releases/download/v0.17.3/restic_0.17.3_linux_arm64.bz2",
+      "sha256": "db27b803534d301cef30577468cf61cb2e242165b8cd6d8cd6efd7001be2e557"
+    },
+    "salt-bootstrap-2026.09.03": {
+      "url": "https://github.com/saltstack/salt-bootstrap/releases/download/v2026.09.03/bootstrap-salt.sh",
+      "sha256": "cca427e7da4131ad4bf9d3d8941a69cd99f45bc880e17e73cc539f459d7bcd66"
+    },
+    "sentry-cli-2.39.1-linux-amd64": {
+      "url": "https://github.com/getsentry/sentry-cli/releases/download/2.39.1/sentry-cli-Linux-x86_64",
+      "sha256": "c41aab845e32b40ee96054eec77e09385d26434808365ef20e876aff54f5df04"
+    },
+    "sentry-cli-2.39.1-linux-arm64": {
+      "url": "https://github.com/getsentry/sentry-cli/releases/download/2.39.1/sentry-cli-Linux-aarch64",
+      "sha256": "e8ec5607a1be099d3981323b86dcea0c3b0ee6a8cd2becec4e4c51f1ab9ae366"
+    },
+    "tailscale-install": {
+      "url": "https://tailscale.com/install.sh",
+      "sha256": "805e85ed6f6f81a7ea2e70d52d47e7d5290863299e5c922b2787d71aa312f22e"
+    },
+    "virtualmin-install": {
+      "url": "https://download.virtualmin.com/virtualmin-install.sh",
+      "sha256": "45267904b41c1ec83dd96d7e6f5ae32bf947a1e2e8b9c1c743f745ef74d21335"
+    },
+    "webmin-setup": {
+      "url": "https://raw.githubusercontent.com/webmin/webmin/1ee78eefb0e14a90d725dba15018a334c7126278/webmin-setup-repo.sh",
+      "sha256": "c752127dcd345494432979eb13140f358243b95b249e9fb7744034393dbccab9"
+    }
+  }
+}
