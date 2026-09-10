@@ -4,6 +4,8 @@
 MODULE_ID="salt"
 MODULE_TITLE="Salt"
 
+SI_SALT_BOOTSTRAP_VERSION="${SI_SALT_BOOTSTRAP_VERSION:-2026.09.03}"
+
 module_check() {
   command -v salt-call >/dev/null 2>&1 || command -v salt-minion >/dev/null 2>&1
 }
@@ -21,16 +23,17 @@ module_apply() {
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
   si_pkg_install curl ca-certificates
-  curl -fsSL https://github.com/saltstack/salt-bootstrap/releases/latest/download/bootstrap-salt.sh \
-    -o /tmp/bootstrap-salt.sh
+  local script="/tmp/bootstrap-salt.sh"
+  si_download_locked "salt-bootstrap-${SI_SALT_BOOTSTRAP_VERSION}" "${script}"
   # Bootstrap may exit non-zero in containers without a real init; packages can still install.
   set +e
   if [[ "${SI_SALT_MASTER:-false}" == "true" ]]; then
-    sh /tmp/bootstrap-salt.sh -M -P stable
+    sh "${script}" -M -P stable
   else
-    sh /tmp/bootstrap-salt.sh -P stable
+    sh "${script}" -P stable
   fi
   set -e
+  rm -f "${script}"
 
   if module_check; then
     return 0

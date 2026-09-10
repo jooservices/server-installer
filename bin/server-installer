@@ -15,6 +15,7 @@ Usage: server-installer <command> [options]
 Commands:
   doctor              Show OS info and module plan (no changes)
   plan                Show what apply would do
+  advise              Show read-only PHP-FPM / database sizing advice
   apply               Apply selected modules (idempotent)
   verify              Re-check modules after apply
   help                Show this help
@@ -63,7 +64,7 @@ export SI_ENFORCE_PREFLIGHT="false"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    doctor|plan|apply|verify|help)
+    doctor|plan|advise|apply|verify|help)
       CMD="$1"
       shift
       ;;
@@ -145,6 +146,9 @@ log_info "Modules: ${MODULES[*]}"
 case "${CMD}" in
   doctor|plan)
     si_run_modules plan "${MODULES[@]}"
+    ;;
+  advise)
+    si_advice_run "${MODULES[@]}"
     ;;
   apply)
     si_acquire_lock
