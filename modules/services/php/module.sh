@@ -79,6 +79,7 @@ module_plan() {
     log_plan "PHP ${SI_PHP_VERSION} CLI already present"
   else
     log_plan "Will install PHP ${SI_PHP_VERSION} CLI + common extensions"
+    log_plan "Will attempt optional extensions (intl, gd, redis, mongodb, apcu, pcov, ...) best-effort"
   fi
   if [[ "${SI_PHP_MODE}" == "fpm" ]]; then
     if si_php_fpm_ok && si_php_version_ok; then
@@ -161,6 +162,66 @@ si_php_redhat_pkgs() {
   printf '%s\n' "${pkgs[@]}"
 }
 
+# Extra extensions beyond the required baseline above (intl/gd/db drivers +
+# PECL-equivalents redis/mongodb/apcu/pcov via native repo packages instead
+# of compiling with `pecl install` — ondrej/php and Remi already ship
+# prebuilt packages for these, which is faster and doesn't need a build
+# toolchain). Best-effort: package availability varies by distro/PHP
+# version, so each is attempted individually and a miss only warns.
+si_php_optional_debian_pkgs() {
+  printf '%s\n' \
+    "php${SI_PHP_VERSION}-dev" \
+    "php${SI_PHP_VERSION}-intl" \
+    "php${SI_PHP_VERSION}-xmlrpc" \
+    "php${SI_PHP_VERSION}-xsl" \
+    "php${SI_PHP_VERSION}-yaml" \
+    "php${SI_PHP_VERSION}-imagick" \
+    "php${SI_PHP_VERSION}-gd" \
+    "php${SI_PHP_VERSION}-memcached" \
+    "php${SI_PHP_VERSION}-mysql" \
+    "php${SI_PHP_VERSION}-sqlite3" \
+    "php${SI_PHP_VERSION}-ldap" \
+    "php${SI_PHP_VERSION}-redis" \
+    "php${SI_PHP_VERSION}-mongodb" \
+    "php${SI_PHP_VERSION}-apcu" \
+    "php${SI_PHP_VERSION}-pcov"
+}
+
+si_php_optional_redhat_pkgs() {
+  printf '%s\n' \
+    php-devel \
+    php-intl \
+    php-gd \
+    php-mysqlnd \
+    php-pdo \
+    php-ldap \
+    php-pecl-imagick \
+    php-pecl-yaml \
+    php-pecl-redis5 \
+    php-pecl-mongodb \
+    php-pecl-apcu \
+    php-pecl-pcov
+}
+
+si_php_try_optional_pkg() {
+  local pkg="$1"
+  si_pkg_is_installed "${pkg}" && return 0
+  case "${SI_PKG_MANAGER}" in
+    apt) apt-get install -y -qq "${pkg}" >/dev/null 2>&1 ;;
+    dnf) dnf install -y -q "${pkg}" >/dev/null 2>&1 ;;
+    yum) yum install -y -q "${pkg}" >/dev/null 2>&1 ;;
+    *) return 1 ;;
+  esac
+}
+
+si_php_install_optional_extensions() {
+  local list_fn="$1" pkg
+  while IFS= read -r pkg; do
+    [[ -n "${pkg}" ]] || continue
+    si_php_try_optional_pkg "${pkg}" || log_warn "php: optional extension ${pkg} not available, skipped"
+  done < <("${list_fn}")
+}
+
 module_apply() {
   case "${SI_PHP_MODE}" in
     cli|fpm) ;;
@@ -208,10 +269,12 @@ module_apply() {
       export DEBIAN_FRONTEND=noninteractive
       apt-get install -y -qq "${pkgs[@]}"
       update-alternatives --set php "/usr/bin/php${SI_PHP_VERSION}" >/dev/null 2>&1 || true
+      si_php_install_optional_extensions si_php_optional_debian_pkgs
       ;;
     redhat)
       while IFS= read -r line; do pkgs+=("${line}"); done < <(si_php_redhat_pkgs)
       dnf install -y -q "${pkgs[@]}"
+      si_php_install_optional_extensions si_php_optional_redhat_pkgs
       ;;
   esac
 

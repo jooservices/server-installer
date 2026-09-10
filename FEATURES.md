@@ -91,6 +91,7 @@ Architecture: **modules + profiles + CLI**; wizard is a TUI frontend only (calls
 | CLI opt-in preflight (`--preflight`) | done | wizard always enforced it; CLI didn't — off by default, CI-safe |
 | `git_identity` module | done | git config + ed25519 SSH key; cross-platform (Linux + macOS) |
 | `github_runner` module | done | registers a self-hosted Actions runner via PAT → registration-token; systemd service or `run.sh` fallback; live-verified against a real org |
+| PHP extension parity with legacy bash tooling | done | intl/xmlrpc/xsl/yaml/imagick/gd/memcached/mysql/sqlite3/ldap + redis/mongodb/apcu/pcov via native packages, best-effort; `packages` gained nano+git |
 
 ## Deferred
 

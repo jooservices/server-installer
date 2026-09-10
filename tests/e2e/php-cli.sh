@@ -18,6 +18,11 @@ assert_cmd "php binary" command -v php
 assert_cmd "php version ${SI_PHP_VERSION}" bash -c "php -v | head -n1 | grep -F 'PHP ${SI_PHP_VERSION}' >/dev/null"
 assert_cmd "fpm package absent" bash -c "! dpkg -s php${SI_PHP_VERSION}-fpm >/dev/null 2>&1"
 assert_cmd "nginx absent" bash -c '! command -v nginx >/dev/null 2>&1'
+assert_cmd "redis extension loaded" bash -c "php -m | grep -qx redis"
+assert_cmd "mongodb extension loaded" bash -c "php -m | grep -qx mongodb"
+assert_cmd "apcu extension loaded" bash -c "php -m | grep -qx apcu"
+assert_cmd "intl extension loaded" bash -c "php -m | grep -qx intl"
+assert_cmd "gd extension loaded" bash -c "php -m | grep -qx gd"
 
 echo "=== E2E php-cli: idempotent re-apply ==="
 "${ROOT}/bin/server-installer" apply --modules php
