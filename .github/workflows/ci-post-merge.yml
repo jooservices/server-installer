@@ -69,5 +69,11 @@ jobs:
       - name: Preflight tests
         run: bash ./tests/preflight.sh
 
+      - name: Download lock tests
+        run: make downloads-test
+
+      - name: Capacity advice tests
+        run: make advice-test
+
       - name: E2E essentials
         run: bash ./tests/run_e2e.sh essentials

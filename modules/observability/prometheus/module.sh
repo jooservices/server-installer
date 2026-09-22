@@ -22,13 +22,12 @@ module_apply() {
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
-  local arch url tar
+  local arch tar
   arch="$(si_arch_suffix)"
-  url="https://github.com/prometheus/prometheus/releases/download/v${SI_PROM_VERSION}/prometheus-${SI_PROM_VERSION}.linux-${arch}.tar.gz"
   tar="/tmp/prometheus.tgz"
 
   si_ensure_user prometheus
-  si_download "${url}" "${tar}"
+  si_download_locked "prometheus-${SI_PROM_VERSION}-linux-${arch}" "${tar}"
   mkdir -p /tmp/prometheus_extracted /etc/prometheus /var/lib/prometheus
   tar -xzf "${tar}" -C /tmp/prometheus_extracted --strip-components=1
   install -m 0755 /tmp/prometheus_extracted/prometheus /usr/local/bin/prometheus

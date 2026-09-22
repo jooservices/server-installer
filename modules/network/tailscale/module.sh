@@ -4,19 +4,24 @@
 MODULE_ID="tailscale"
 MODULE_TITLE="Tailscale"
 
+SI_TAILSCALE_VERSION="${SI_TAILSCALE_VERSION:-1.102.3}"
+
 module_check() {
   command -v tailscale >/dev/null 2>&1 && command -v tailscaled >/dev/null 2>&1
 }
 
 module_plan() {
-  if module_check; then log_plan "Tailscale already installed"; else log_plan "Will install Tailscale (auth via SI_TAILSCALE_AUTHKEY later)"; fi
+  if module_check; then log_plan "Tailscale already installed"; else log_plan "Will install Tailscale v${SI_TAILSCALE_VERSION} (auth via SI_TAILSCALE_AUTHKEY later)"; fi
 }
 
 module_apply() {
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
   si_pkg_install curl
-  curl -fsSL https://tailscale.com/install.sh | sh
+  local script="/tmp/tailscale-install.sh"
+  si_download_locked tailscale-install "${script}"
+  VERSION="${SI_TAILSCALE_VERSION}" sh "${script}"
+  rm -f "${script}"
   if [[ "${SI_SYSTEMD_ACTIVE}" == "true" ]]; then
     systemctl enable --now tailscaled >/dev/null 2>&1 || true
   fi
