@@ -55,8 +55,8 @@ si_git_configured() {
   home="$(si_git_home "${user}")"
   [[ -n "${home}" && -f "${home}/.gitconfig" ]] || return 1
   local name email
-  name="$(git config --file "${home}/.gitconfig" user.name 2>/dev/null || true)"
-  email="$(git config --file "${home}/.gitconfig" user.email 2>/dev/null || true)"
+  name="$(env -u GIT_DIR -u GIT_WORK_TREE git -C / config --file "${home}/.gitconfig" user.name 2>/dev/null || true)"
+  email="$(env -u GIT_DIR -u GIT_WORK_TREE git -C / config --file "${home}/.gitconfig" user.email 2>/dev/null || true)"
   [[ "${name}" == "${SI_GIT_USER_NAME:-}" && "${email}" == "${SI_GIT_USER_EMAIL:-}" ]]
 }
 

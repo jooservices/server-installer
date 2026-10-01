@@ -104,8 +104,7 @@ jobs:
             --volume "${GITHUB_WORKSPACE}:/src:ro" \
             semgrep/semgrep@sha256:67319956da3dcb58baf5b322899c15458e3963e7018a86aeeb5cd224e69cb77a \
             semgrep scan --config auto --error \
-              --exclude '.github' \
-              --exclude 'modules/dns/pihole/module.sh'
+              --exclude '.github'
 
   test:
     name: Test
@@ -126,6 +125,12 @@ jobs:
 
       - name: Preflight tests
         run: bash ./tests/preflight.sh
+
+      - name: Download lock tests
+        run: make downloads-test
+
+      - name: Capacity advice tests
+        run: make advice-test
 
       - name: E2E essentials
         run: bash ./tests/run_e2e.sh essentials

@@ -17,19 +17,14 @@ module_apply() {
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
   si_pkg_install curl ca-certificates
-  curl -fsSL https://sentry.io/get-cli/ | sh
-  if [[ -x /usr/local/bin/sentry-cli ]]; then
-    return 0
-  fi
-  # Fallback: GitHub release binary
-  local arch ver
+  local arch ver artifact file
   arch="$(si_arch_suffix)"
-  [[ "${arch}" == "amd64" ]] && arch="x86_64" || arch="aarch64"
   ver="${SI_SENTRY_CLI_VERSION:-2.39.1}"
-  curl -fsSL \
-    "https://github.com/getsentry/sentry-cli/releases/download/${ver}/sentry-cli-Linux-${arch}" \
-    -o /usr/local/bin/sentry-cli
-  chmod +x /usr/local/bin/sentry-cli
+  artifact="sentry-cli-${ver}-linux-${arch}"
+  file="/tmp/sentry-cli"
+  si_download_locked "${artifact}" "${file}"
+  install -m 0755 "${file}" /usr/local/bin/sentry-cli
+  rm -f "${file}"
 }
 
 module_verify() { command -v sentry-cli >/dev/null 2>&1; }

@@ -22,14 +22,13 @@ module_apply() {
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
-  local arch url zip
+  local arch zip
   arch="$(si_arch_suffix)"
-  url="https://github.com/grafana/loki/releases/download/v${SI_PROMTAIL_VERSION}/promtail-linux-${arch}.zip"
   zip="/tmp/promtail.zip"
 
   si_pkg_install unzip
   si_ensure_user promtail
-  si_download "${url}" "${zip}"
+  si_download_locked "promtail-${SI_PROMTAIL_VERSION}-linux-${arch}" "${zip}"
   mkdir -p /tmp/promtail_extracted /etc/promtail
   unzip -o "${zip}" -d /tmp/promtail_extracted
   install -m 0755 "/tmp/promtail_extracted/promtail-linux-${arch}" /usr/local/bin/promtail

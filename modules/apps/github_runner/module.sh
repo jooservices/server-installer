@@ -8,7 +8,7 @@
 MODULE_ID="github_runner"
 MODULE_TITLE="GitHub Actions Runner"
 
-SI_GITHUB_RUNNER_VERSION="${SI_GITHUB_RUNNER_VERSION:-}"
+SI_GITHUB_RUNNER_VERSION="${SI_GITHUB_RUNNER_VERSION:-2.337.0}"
 SI_GITHUB_RUNNER_NAME="${SI_GITHUB_RUNNER_NAME:-$(hostname 2>/dev/null || echo si-runner)}"
 SI_GITHUB_RUNNER_LABELS="${SI_GITHUB_RUNNER_LABELS:-}"
 SI_GITHUB_RUNNER_USER="${SI_GITHUB_RUNNER_USER:-github-runner}"
@@ -47,11 +47,6 @@ si_gh_runner_arch() {
     arm64) printf 'arm64\n' ;;
     *) printf 'x64\n' ;;
   esac
-}
-
-si_gh_runner_latest_version() {
-  curl -fsSL https://api.github.com/repos/actions/runner/releases/latest \
-    | python3 -c 'import json,sys; print(json.load(sys.stdin)["tag_name"].lstrip("v"))'
 }
 
 si_gh_runner_process_running() {
@@ -128,15 +123,14 @@ module_apply() {
   mkdir -p "${SI_GITHUB_RUNNER_DIR}"
   chown "${SI_GITHUB_RUNNER_USER}:${SI_GITHUB_RUNNER_USER}" "${SI_GITHUB_RUNNER_DIR}"
 
-  local version
+  local version arch tar
   version="${SI_GITHUB_RUNNER_VERSION}"
-  [[ -z "${version}" ]] && version="$(si_gh_runner_latest_version)"
-
-  local arch tar url
   arch="$(si_gh_runner_arch)"
-  url="https://github.com/actions/runner/releases/download/v${version}/actions-runner-linux-${arch}-${version}.tar.gz"
   tar="/tmp/actions-runner.tar.gz"
-  si_download "${url}" "${tar}"
+  case "${arch}" in
+    x64) arch="amd64" ;;
+  esac
+  si_download_locked "github-runner-${version}-linux-${arch}" "${tar}"
 
   su -s /bin/bash -c "tar -xzf $(printf '%q' "${tar}") -C $(printf '%q' "${SI_GITHUB_RUNNER_DIR}")" "${SI_GITHUB_RUNNER_USER}"
   rm -f "${tar}"

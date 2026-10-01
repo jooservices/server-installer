@@ -23,6 +23,8 @@ source "${SI_LIB_DIR}/dry_run.sh"
 source "${SI_LIB_DIR}/lock.sh"
 # shellcheck source=download.sh
 source "${SI_LIB_DIR}/download.sh"
+# shellcheck source=advice.sh
+source "${SI_LIB_DIR}/advice.sh"
 # shellcheck source=containers.sh
 source "${SI_LIB_DIR}/containers.sh"
 # shellcheck source=panel.sh

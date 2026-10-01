@@ -58,7 +58,7 @@ flowchart TD
     S --- S2[Secrets: Gitleaks]
     S --- S3[SAST: Semgrep auto]
     T --- T1[Module coverage map]
-    T --- T2[Metadata and preflight tests]
+    T --- T2[Metadata, preflight, download-lock, and advice tests]
     T --- T3[E2E essentials]
     T --- T4[E2E wizard]
     L --> T5[OS smoke matrix]

@@ -35,14 +35,13 @@ module_apply() {
   if module_check; then return 0; fi
   if [[ "${SI_DRY_RUN}" == "true" ]]; then module_plan; return 0; fi
 
-  local arch url tar
+  local arch tar
   case "${SI_CPU_ARCH}" in
     arm64) arch="arm64" ;;
     *) arch="amd64" ;;
   esac
-  url="https://github.com/AdguardTeam/AdGuardHome/releases/download/v${SI_ADGUARD_VERSION}/AdGuardHome_linux_${arch}.tar.gz"
   tar="/tmp/adguard.tgz"
-  si_download "${url}" "${tar}"
+  si_download_locked "adguard-${SI_ADGUARD_VERSION}-linux-${arch}" "${tar}"
   mkdir -p /tmp/adguard_extracted /opt/AdGuardHome
   tar -xzf "${tar}" -C /tmp/adguard_extracted
   cp -a /tmp/adguard_extracted/AdGuardHome/. /opt/AdGuardHome/
